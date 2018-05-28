@@ -1,22 +1,34 @@
-package app;
+package custom;
 
+import app.Main;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
+import java.util.LinkedList;
+import java.util.List;
 
-public class CustomerUtils {
 
-//    private static List<InvalidationListener> mListener = new LinkedList();
-    private static CustomerUtils cu;
-    private CustomerUtils() {}
-    public static synchronized CustomerUtils getUtils() {
-        if (cu == null) cu = new CustomerUtils();
-        return cu;
+public class CustomUtils {
+
+    private CustomUtils() {}
+    private static List<Customizable> sCustomList = new LinkedList<>();
+
+    public static void addCustom(Customizable c) {
+        sCustomList.add(c);
     }
+
+    public static void delCustom(Customizable c) {
+        sCustomList.remove(c);
+    }
+
+    public static List getCustomList() {
+        return sCustomList;
+    }
+
     public static void addMovieType(String... type) {
-        GridPane p = (GridPane) TypeMenu.getPane();
+        GridPane p = (GridPane) Main.getPane();
         for (String t : type) {
             Button new_btn = new Button(t);
             new_btn.setId(t.toLowerCase());
@@ -40,7 +52,7 @@ public class CustomerUtils {
     }
 
     public static void changeTypeNameById(String id, String text) {
-        GridPane p = (GridPane) TypeMenu.getPane();
+        GridPane p = (GridPane) Main.getPane();
         ObservableList children = p.getChildren();
         FilteredList<Button> btn_list = new FilteredList(children, Button -> true);
         for (Button b : btn_list) {
