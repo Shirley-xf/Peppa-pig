@@ -1,21 +1,24 @@
 package custom;
 
 import app.Main;
+import dao.DbConnection;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import app.controllers.*;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
 
 public class CustomUtils {
-
     private CustomUtils() {}
     private static List<Customizable> sCustomList = new LinkedList<>();
-
+    private static Connection conn;
     public static void addCustom(Customizable c) {
         sCustomList.add(c);
     }
@@ -52,15 +55,26 @@ public class CustomUtils {
         }
     }
 
-    public static void changeTypeNameById(String id, String text) {
+    public static boolean changeTypeNameById(String id, String text) {
         GridPane p = (GridPane) Main.getMenuPane();
         ObservableList children = p.getChildren();
         FilteredList<Button> btn_list = children.filtered(Button -> true);
+
         for (Button b : btn_list) {
             if (b.getId().equals(id)) {
-                b.setText(text);
-                return;
+                try {
+                    conn = DbConnection.getConnection();
+                    Statement stmt = conn.createStatement();
+                    String cmd = "update `film` set `type` = \"" + text + "\" where `id` = " + id + ";";
+                    b.setText(text);
+                    return stmt.execute(cmd);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+
             }
         }
+        return false;
     }
 }

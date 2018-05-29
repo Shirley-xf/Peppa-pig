@@ -3,6 +3,7 @@ package app;
 import app.controllers.TypeMenuController;
 import custom.CustomUtils;
 import custom.Customizable;
+import dao.DbConnection;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,6 +15,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -22,6 +25,7 @@ public class Main extends Application {
     private static Pane sMenuPane;
     private static Parent sListMenuPar;
     private static Stage sPrimaryStage;
+    public static Connection conn;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -40,13 +44,15 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        conn = DbConnection.getConnection();
         launch(args);
     }
 
     public void runCustomSettings() {
         List<Customizable> custom_list = CustomUtils.getCustomList();
-        for (Customizable c : custom_list) {
-            c.customSetup();
+        Iterator<Customizable> iter = custom_list.iterator();
+        while (iter.hasNext()) {
+            iter.next().customSetup();
         }
     }
 
