@@ -7,6 +7,7 @@ public class Client {
             CustomUtils.addMovieType("Action", "Comedy", "Horror", "Others");
             CustomUtils.changeTypeNameById("type1", "Documentary");
         });
+
         Main.main(args);
     }
 }

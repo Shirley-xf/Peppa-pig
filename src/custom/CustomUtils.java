@@ -35,7 +35,7 @@ public class CustomUtils {
             new_btn.setId(text.toLowerCase());
             ObservableList children = p.getChildren();
             FilteredList<Button> btn_list = children.filtered(Button -> true);
-            Button last = btn_list.get(children.size() - 1);
+            Button last = btn_list.get(btn_list.size() - 1);
             int row = GridPane.getRowIndex(last);
             int col = GridPane.getColumnIndex(last);
             if (row == 2 && col == 3) {
