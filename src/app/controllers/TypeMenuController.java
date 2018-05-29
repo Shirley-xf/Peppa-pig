@@ -9,16 +9,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
-import java.awt.*;
 
 public class TypeMenuController {
 
     @FXML
     public Pane typeMenuPane;
 
+
+    //should be refactored
     public static void getFilmByType(String s) {
-        System.out.println("getFilmByType");
+        System.out.println("getFilmByType" + " " + s);
         Main.switchToListMenu();
+        // query by text s
     }
 
     public void goBack() {

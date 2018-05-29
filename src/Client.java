@@ -10,6 +10,4 @@ public class Client {
 
         Main.main(args);
     }
-
-
 }
