@@ -2,21 +2,14 @@ package app.controllers;
 
 
 import app.Main;
-import javafx.fxml.*;
-import javafx.scene.layout.Pane;
 
 
 public class TypeMenuController {
 
-    @FXML
-    public Pane typeMenuPane;
 
-
-    //should be refactored
-    public static void getFilmByType(String s) {
-        System.out.println("getFilmByType" + " " + s);
-        Main.switchToListMenu();
-        // query by text s
+    public static void getFilmByType(String text) {
+        System.out.println("getFilmByType" + " " + text);
+        Main.goToListMenuAndShow(text);
     }
 
     public void goBack() {

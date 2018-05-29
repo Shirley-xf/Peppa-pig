@@ -8,43 +8,53 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 
 
 public class Main extends Application {
 
-    private static Pane sMenuPane;
-    private static Parent sListMenuPar;
+    private static Pane sTypeMenuPane;
+    private static SplitPane sFilmListPane;
     private static Stage sPrimaryStage;
-    public static Connection conn;
+    private static Scene film_list_scene;
+    private static Scene type_menu_scene;
+    public static Connection conn = DbConnection.getConnection();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         sPrimaryStage = primaryStage;
-        sMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
-        ObservableList children = sMenuPane.getChildren();
+        sTypeMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
+        ObservableList children = sTypeMenuPane.getChildren();
         initDefaultBtn(children);
-        sPrimaryStage.setScene(new Scene(sMenuPane, 600, 400));
+        type_menu_scene = new Scene(sTypeMenuPane);
+        sPrimaryStage.setScene(type_menu_scene);
         sPrimaryStage.show();
-        sListMenuPar = FXMLLoader.load(getClass().getResource("listMenu.fxml"));
+
+
+        sFilmListPane = FXMLLoader.load(getClass().getResource("listMenu.fxml"));
+        film_list_scene = new Scene(sFilmListPane);
         runCustomSettings();
     }
 
     public static Pane getMenuPane() {
-        return sMenuPane;
+        return sTypeMenuPane;
     }
 
     public static void main(String[] args) {
-        conn = DbConnection.getConnection();
         launch(args);
     }
 
@@ -56,10 +66,26 @@ public class Main extends Application {
         }
     }
 
-    public static void switchToListMenu() {
+    public static void goToListMenuAndShow(String type) {
+        sPrimaryStage.setScene(film_list_scene);
+        sPrimaryStage.show();
+        FilteredList<Node> anchorPaneList = sFilmListPane.getItems().filtered(AnchorPane -> true);
+        AnchorPane left = (AnchorPane) anchorPaneList.get(0);
+        ListView film_list_view = (ListView) left.getChildren().get(0);
+        ResultSet results = queryFilm(type);
+        film_list_view.getItems().clear();
+        try {
+            while (results.next()) {
+                film_list_view.getItems().add(results.getString(1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Scene scene = new Scene(sListMenuPar);
-        sPrimaryStage.setScene(scene);
+    }
+
+    public static void goToTypeMenu() {
+        sPrimaryStage.setScene(type_menu_scene);
         sPrimaryStage.show();
     }
 
@@ -74,5 +100,18 @@ public class Main extends Application {
                     break;
             }
         }
+    }
+
+    private static ResultSet queryFilm(String type) {
+        try {
+            Statement stmt = conn.createStatement();
+            String cmd = "select `name` from `film` where `type` = \"" + type + "\";";
+            return stmt.executeQuery(cmd);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return null;
     }
 }

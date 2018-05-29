@@ -18,7 +18,7 @@ import java.util.List;
 public class CustomUtils {
     private CustomUtils() {}
     private static List<Customizable> sCustomList = new LinkedList<>();
-    private static Connection conn;
+    private static Connection conn = DbConnection.getConnection();
     public static void addCustom(Customizable c) {
         sCustomList.add(c);
     }
@@ -63,13 +63,11 @@ public class CustomUtils {
         for (Button b : btn_list) {
             if (b.getId().equals(id)) {
                 try {
-                    conn = DbConnection.getConnection();
                     Statement stmt = conn.createStatement();
                     String cmd = "update `film` set `type` = \"" + text + "\" where `id` = " + id + ";";
                     b.setText(text);
                     return stmt.execute(cmd);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     return false;
                 }
 
