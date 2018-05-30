@@ -1,28 +1,19 @@
 package app;
 
 import app.controllers.TypeMenuController;
-import custom.CustomUtils;
-import custom.Customizable;
+import custom.*;
 import dao.DbConnection;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-
+import javafx.fxml.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.*;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 
 public class Main extends Application {
@@ -32,6 +23,7 @@ public class Main extends Application {
     private static Stage sPrimaryStage;
     private static Scene film_list_scene;
     private static Scene type_menu_scene;
+    private static List<Film> sFilmLinkedList;
     public static Connection conn = DbConnection.getConnection();
 
     @Override
@@ -72,16 +64,11 @@ public class Main extends Application {
         FilteredList<Node> anchorPaneList = sFilmListPane.getItems().filtered(AnchorPane -> true);
         AnchorPane left = (AnchorPane) anchorPaneList.get(0);
         ListView film_list_view = (ListView) left.getChildren().get(0);
-        ResultSet results = queryFilm(type);
+        sFilmLinkedList = queryFilmByType(type);
         film_list_view.getItems().clear();
-        try {
-            while (results.next()) {
-                film_list_view.getItems().add(results.getString(1));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (Film f : sFilmLinkedList) {
+            film_list_view.getItems().add(f.getName());
         }
-
     }
 
     public static void goToTypeMenu() {
@@ -102,16 +89,59 @@ public class Main extends Application {
         }
     }
 
-    private static ResultSet queryFilm(String type) {
+    private static LinkedList<Film> queryFilmByType(String type) {
         try {
+            LinkedList<Film> lst = new LinkedList<>();
             Statement stmt = conn.createStatement();
-            String cmd = "select `name` from `film` where `type` = \"" + type + "\";";
-            return stmt.executeQuery(cmd);
-
+            String cmd = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
+            ResultSet films_result = stmt.executeQuery(cmd);
+            try {
+                while (films_result.next()) {
+                    Film f = new Film();
+                    f.setId(films_result.getInt(1));
+                    f.setName(films_result.getString(2));
+                    f.setDuration(films_result.getString(3));
+                    f.setYear(films_result.getInt(4));
+                    f.setType(films_result.getString(5));
+                    f.setIntro_url(films_result.getString(6));
+                    f.setMedia_url(films_result.getString(7));
+                    f.setImg_url(films_result.getString(8));
+                    addDirectorsAndActors(f);
+                    lst.add(f);
+                }
+                return lst;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
         return null;
+    }
+
+    private static void addDirectorsAndActors(Film f) {
+        try {
+            Statement stmt = conn.createStatement();
+            String[] actors, directors;
+            String actor_qry = "select `actor` from `film_actor` where `id` = \"" + f.getId() + "\";";
+            String director_qry = "select `director` from `film_director` where `id` = \"" + f.getId() + "\";";
+            ResultSet actor_set = stmt.executeQuery(actor_qry);
+            ResultSet director_set = stmt.executeQuery(director_qry);
+            List<String> tmp = new LinkedList<>();
+            while (actor_set.next()) {
+                tmp.add(actor_set.getString(1));
+            }
+            f.setActors(tmp);
+            tmp = new LinkedList<>();
+            while (director_set.next()) {
+                tmp.add(director_set.getString(1));
+            }
+            f.setDirectors(tmp);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
