@@ -9,6 +9,8 @@
 # Session
 Session.vim
 
+.DS_Store
+
 # Temporary
 .netrwhist
 *~
