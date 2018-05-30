@@ -25,4 +25,14 @@ public class DbConnection {
         return conn;
     }
 
+    public static void excute(String sql) throws SQLException {
+        Statement stmt = conn.createStatement();
+        stmt.execute(sql);
+    }
+
+    public static ResultSet query(String sql) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.executeQuery(sql);
+    }
+
 }

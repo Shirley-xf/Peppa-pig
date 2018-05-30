@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ListMenuController {
 
-    private static Connection conn = DbConnection.getConnection();
 
     public void goBack() {
         System.out.println("goBack");
@@ -22,9 +21,8 @@ public class ListMenuController {
     public static LinkedList<Film> queryFilmByType(String type) {
         try {
             LinkedList<Film> lst = new LinkedList<>();
-            Statement stmt = conn.createStatement();
-            String cmd = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
-            ResultSet films_result = stmt.executeQuery(cmd);
+            String sql = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
+            ResultSet films_result = DbConnection.query(sql);
             try {
                 while (films_result.next()) {
                     Film f = new Film();
@@ -53,12 +51,10 @@ public class ListMenuController {
 
     private static void addDirectorsAndActors(Film f) {
         try {
-            Statement stmt = conn.createStatement();
-            String[] actors, directors;
             String actor_qry = "select `actor` from `film_actor` where `id` = \"" + f.getId() + "\";";
             String director_qry = "select `director` from `film_director` where `id` = \"" + f.getId() + "\";";
-            ResultSet actor_set = stmt.executeQuery(actor_qry);
-            ResultSet director_set = stmt.executeQuery(director_qry);
+            ResultSet actor_set = DbConnection.query(actor_qry);
+            ResultSet director_set = DbConnection.query(director_qry);
             List<String> tmp = new LinkedList<>();
             while (actor_set.next()) {
                 tmp.add(actor_set.getString(1));

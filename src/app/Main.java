@@ -9,8 +9,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.TextFlow;
@@ -32,7 +31,6 @@ public class Main extends Application {
     private static Scene sTypeMenuScene;
     private static List<Film> sFilmLinkedList;
     private static FilteredList<Node> sAnchorPaneList;
-    //public static Connection conn = DbConnection.getConnection();
     private static FilteredList<ImageView> sImgViewList;
     private static FilteredList<Label> sLabelList;
     private static FilteredList<MediaView> sMediaViewList;
@@ -109,16 +107,17 @@ public class Main extends Application {
             byte[] buffer = new byte[1000];
             while (bis.read(buffer) != -1) sb.append(buffer);
         } catch (Exception e) {
-            System.err.println(e);
+            System.err.println("introduction " + e);
         }
 
         ImageView iv = sImgViewList.get(0);
+        File file = new File(f.getImg_url());
         try  {
-            iv.setImage(new Image(Main.class.getResourceAsStream(f.getImg_url())));
+            iv.setImage(new Image(file.toURI().toURL().toString(), true));
 
         } catch (Exception e) {
             System.out.println(f.getImg_url());
-            System.err.println(e);
+            System.err.println("Image " + e);
         }
 
 //        try {
