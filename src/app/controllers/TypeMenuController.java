@@ -19,4 +19,6 @@ public class TypeMenuController {
     public void goToMainMenu() {
         System.out.println("goToMainMenu");
     }
+
+
 }

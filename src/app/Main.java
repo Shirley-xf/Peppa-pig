@@ -1,44 +1,61 @@
 package app;
 
+import app.controllers.ListMenuController;
 import app.controllers.TypeMenuController;
 import custom.*;
-import dao.DbConnection;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.MediaView;
+import javafx.scene.text.TextFlow;
 import javafx.stage.*;
-import java.io.IOException;
-import java.sql.*;
+
+
+import javax.imageio.stream.ImageInputStream;
+import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 
 public class Main extends Application {
-
+    private static boolean mKeyboardOnly = false; // 0 mouse, 1 key
     private static Pane sTypeMenuPane;
     private static SplitPane sFilmListPane;
     private static Stage sPrimaryStage;
-    private static Scene film_list_scene;
-    private static Scene type_menu_scene;
+    private static Scene sFilmListScene;
+    private static Scene sTypeMenuScene;
     private static List<Film> sFilmLinkedList;
-    public static Connection conn = DbConnection.getConnection();
-
+    private static FilteredList<Node> sAnchorPaneList;
+    //public static Connection conn = DbConnection.getConnection();
+    private static FilteredList<ImageView> sImgViewList;
+    private static FilteredList<Label> sLabelList;
+    private static FilteredList<MediaView> sMediaViewList;
     @Override
     public void start(Stage primaryStage) throws IOException {
         sPrimaryStage = primaryStage;
         sTypeMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
         ObservableList children = sTypeMenuPane.getChildren();
         initDefaultBtn(children);
-        type_menu_scene = new Scene(sTypeMenuPane);
-        sPrimaryStage.setScene(type_menu_scene);
+        sTypeMenuScene = new Scene(sTypeMenuPane);
+        sPrimaryStage.setScene(sTypeMenuScene);
         sPrimaryStage.show();
 
 
         sFilmListPane = FXMLLoader.load(getClass().getResource("listMenu.fxml"));
-        film_list_scene = new Scene(sFilmListPane);
+        sFilmListScene = new Scene(sFilmListPane);
+        sAnchorPaneList = sFilmListPane.getItems().filtered(e -> e instanceof AnchorPane);
+
+        AnchorPane right = (AnchorPane) sAnchorPaneList.get(1);
+        ObservableList chrn = right.getChildren();
+        sImgViewList = chrn.filtered(e -> e instanceof ImageView);
+        sLabelList = chrn.filtered(e -> e instanceof Label);
+        sMediaViewList = chrn.filtered(e -> e instanceof MediaView);
         runCustomSettings();
     }
 
@@ -59,25 +76,77 @@ public class Main extends Application {
     }
 
     public static void goToListMenuAndShow(String type) {
-        sPrimaryStage.setScene(film_list_scene);
+        sPrimaryStage.setScene(sFilmListScene);
         sPrimaryStage.show();
-        FilteredList<Node> anchorPaneList = sFilmListPane.getItems().filtered(AnchorPane -> true);
-        AnchorPane left = (AnchorPane) anchorPaneList.get(0);
+        AnchorPane left = (AnchorPane) sAnchorPaneList.get(0);
         ListView film_list_view = (ListView) left.getChildren().get(0);
-        sFilmLinkedList = queryFilmByType(type);
+        sFilmLinkedList = ListMenuController.queryFilmByType(type);
         film_list_view.getItems().clear();
+        ObservableList<Film> obl_items = film_list_view.getItems();
         for (Film f : sFilmLinkedList) {
-            film_list_view.getItems().add(f.getName());
+            obl_items.add(f);
+        }
+        if (mKeyboardOnly) {
+            film_list_view.setOnMousePressed(event -> {
+                Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
+                showAllInfo(f);
+            });
+        } else {
+            film_list_view.setOnKeyPressed(event -> {
+                if(event.getCode().isWhitespaceKey()) {
+                    Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
+                    showAllInfo(f);
+                }
+            });
         }
     }
 
+    private static void showAllInfo(Film f) {
+        System.out.println("show " + f);
+
+        StringBuilder sb = new StringBuilder("Introduction:");
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f.getIntro_url()))) {
+            byte[] buffer = new byte[1000];
+            while (bis.read(buffer) != -1) sb.append(buffer);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+
+        ImageView iv = sImgViewList.get(0);
+        try  {
+            iv.setImage(new Image(Main.class.getResourceAsStream(f.getImg_url())));
+
+        } catch (Exception e) {
+            System.out.println(f.getImg_url());
+            System.err.println(e);
+        }
+
+//        try {
+//            sMediaViewList.set(0, new MediaView(new Med))
+//        }
+
+        sLabelList.get(0).setText(sb.toString());
+        sb = new StringBuilder("Actors: ");
+        List<String> actors = f.getActors();
+        List<String> directors = f.getDirectors();
+        for (String s : actors) sb.append(s + " ");
+        sb.append("\nDirectors: ");
+        for (String s : directors) sb.append(s + " ");
+        sb.append("\nDuration: ");
+        sb.append(f.getDuration());
+        sb.append("\nYear: ");
+        sb.append(f.getYear());
+        sLabelList.get(1).setText(sb.toString());
+//
+    }
+
     public static void goToTypeMenu() {
-        sPrimaryStage.setScene(type_menu_scene);
+        sPrimaryStage.setScene(sTypeMenuScene);
         sPrimaryStage.show();
     }
 
     private void initDefaultBtn(ObservableList oblst) {
-        FilteredList<Button> flst = oblst.filtered(Button -> true);
+        FilteredList<Button> flst = oblst.filtered(e -> e instanceof Button);
         for (Button btn : flst) {
             switch (btn.getId()) {
                 case "type1":
@@ -89,59 +158,5 @@ public class Main extends Application {
         }
     }
 
-    private static LinkedList<Film> queryFilmByType(String type) {
-        try {
-            LinkedList<Film> lst = new LinkedList<>();
-            Statement stmt = conn.createStatement();
-            String cmd = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
-            ResultSet films_result = stmt.executeQuery(cmd);
-            try {
-                while (films_result.next()) {
-                    Film f = new Film();
-                    f.setId(films_result.getInt(1));
-                    f.setName(films_result.getString(2));
-                    f.setDuration(films_result.getString(3));
-                    f.setYear(films_result.getInt(4));
-                    f.setType(films_result.getString(5));
-                    f.setIntro_url(films_result.getString(6));
-                    f.setMedia_url(films_result.getString(7));
-                    f.setImg_url(films_result.getString(8));
-                    addDirectorsAndActors(f);
-                    lst.add(f);
-                }
-                return lst;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        return null;
-    }
 
-    private static void addDirectorsAndActors(Film f) {
-        try {
-            Statement stmt = conn.createStatement();
-            String[] actors, directors;
-            String actor_qry = "select `actor` from `film_actor` where `id` = \"" + f.getId() + "\";";
-            String director_qry = "select `director` from `film_director` where `id` = \"" + f.getId() + "\";";
-            ResultSet actor_set = stmt.executeQuery(actor_qry);
-            ResultSet director_set = stmt.executeQuery(director_qry);
-            List<String> tmp = new LinkedList<>();
-            while (actor_set.next()) {
-                tmp.add(actor_set.getString(1));
-            }
-            f.setActors(tmp);
-            tmp = new LinkedList<>();
-            while (director_set.next()) {
-                tmp.add(director_set.getString(1));
-            }
-            f.setDirectors(tmp);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

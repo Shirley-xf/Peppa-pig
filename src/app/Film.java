@@ -1,5 +1,7 @@
 package app;
 
+import javafx.scene.Node;
+
 import java.util.List;
 
 public class Film {
@@ -93,5 +95,10 @@ public class Film {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
