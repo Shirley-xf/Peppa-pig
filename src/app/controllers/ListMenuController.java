@@ -26,7 +26,7 @@ public class ListMenuController {
                     Film f = new Film();
                     f.setId(films_result.getInt(1));
                     f.setName(films_result.getString(2));
-                    f.setDuration(films_result.getString(3));
+                    f.setDuration(films_result.getString(3) + "min");
                     f.setYear(films_result.getInt(4));
                     f.setType(films_result.getString(5));
                     f.setIntro_url(films_result.getString(6));

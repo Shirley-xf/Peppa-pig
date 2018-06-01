@@ -51,6 +51,12 @@ public class FilmInfoParser {
         File intro_dir = new File(sDataPath + "/introductions");
         File img_dir = new File(sDataPath + "/pictures");
         FileOutputStream fos;
+        sql = "delete from film_actor; delete from film_director; delete from film;";
+        try {
+            DbConnection.exeUpdate(sql);
+        } catch (Exception e) {
+            System.err.println("refreshing db: " + e);
+        }
 
         for (String one_line : all_infos) {
             String[] field = one_line.split("\\|");
@@ -67,17 +73,12 @@ public class FilmInfoParser {
                 fos.write(field[4].getBytes());
                 fos.flush();
 
-                sql = "delete from film_actor; delete from film_director; delete from film;";
-                try {
-                    DbConnection.excute(sql);
-                } catch (Exception e) {
-                    System.err.println("refreshing db: " + e);
-                }
+
 
                 sql = "insert into film (name, duration, intro_url) values (" +
                         "\"" + field[0] + "\", \"" + field[3] + "\", \"" + intro_file.toURI().toURL().toExternalForm() + "\");";
                 try {
-                    DbConnection.excute(sql);
+                    DbConnection.exeUpdate(sql);
                 } catch (Exception e) {
                     System.err.println(e);
                 }
@@ -92,7 +93,7 @@ public class FilmInfoParser {
                 for (File img : imgs) {
                     try {
                         sql = "update film set img_url = \"" + img.toURI().toURL().toExternalForm() + "\" where id = " + id;
-                        DbConnection.excute(sql);
+                        DbConnection.exeUpdate(sql);
                     } catch (Exception e) {
                         System.err.println(e);
                     }
@@ -101,18 +102,18 @@ public class FilmInfoParser {
                 for (String dirtr : directors) {
                     sql = "insert into film_director (id, director) values (" + id + ",\"" + dirtr + "\");";
                     try {
-                        DbConnection.excute(sql);
+                        DbConnection.exeUpdate(sql);
                     } catch (Exception e) {
                         System.err.println(e);
                     }
-                    if (++cnt > 2) break;
+                    if (++cnt > 1) break;
                 }
 
                 cnt = 0;
                 for (String actr : actors) {
                     sql = "insert into film_actor (id, actor) values (" + id + ",\"" + actr + "\");";
                     try {
-                        DbConnection.excute(sql);
+                        DbConnection.exeUpdate(sql);
                     } catch (Exception e) {
                         System.err.println(e);
                     }
@@ -131,7 +132,7 @@ public class FilmInfoParser {
                     String film_name = film_.getName();
                     sql = "update film set type = \"" + type_.getName() + "\" where name = \"" + film_name.substring(0, film_name.lastIndexOf(".")) + "\";";
                     try {
-                        DbConnection.excute(sql);
+                        DbConnection.exeUpdate(sql);
                     } catch (Exception e) {
                         System.err.println(e);
                     }

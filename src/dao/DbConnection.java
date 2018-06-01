@@ -25,14 +25,15 @@ public class DbConnection {
         return conn;
     }
 
-    public static void excute(String sql) throws SQLException {
+    public static void exeUpdate(String sql) throws SQLException {
         Statement stmt = getConnection().createStatement();
-        stmt.execute(sql);
+        stmt.executeUpdate(sql);
     }
 
     public static ResultSet query(String sql) throws SQLException {
         Statement stmt = getConnection().createStatement();
         return stmt.executeQuery(sql);
     }
+
 
 }

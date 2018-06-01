@@ -125,7 +125,6 @@ public class Main extends Application {
         ImageView iv = sImgViewList.get(0);
 
         try  {
-//            File file = new File(f.getImg_url());
             Image img = new Image(f.getImg_url());
             iv.setImage(img);
         } catch (Exception e) {
@@ -144,10 +143,10 @@ public class Main extends Application {
         for (String s : actors) sb.append(s + "\n");
         sb.append("Directors:\n");
         for (String s : directors) sb.append(s + "\n");
-        sb.append("Duration:\n");
+        sb.append("Duration: ");
         sb.append(f.getDuration() + "\n");
-        sb.append("Year:\n");
-        sb.append(f.getYear());
+        sb.append("Year: ");
+        sb.append((f.getYear() == 0) ? "" : f.getYear());
         sLabelList.get(1).setText(sb.toString());
 //
     }

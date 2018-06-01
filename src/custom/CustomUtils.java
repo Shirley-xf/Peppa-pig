@@ -67,7 +67,7 @@ public class CustomUtils {
 //                try {
 //                    String cmd = "update `film` set `type` = \"" + text + "\" where `type` = " + old_text + ";";
 //                    b.setText(text);
-//                    DbConnection.excute(cmd);
+//                    DbConnection.exeUpdate(cmd);
 //
 //                    return true;
 //                } catch (Exception e) {
