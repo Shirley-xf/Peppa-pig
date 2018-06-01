@@ -49,27 +49,22 @@ public class Film {
         this.id = id;
     }
 
-    public String getIntro_url() {
-        return intro_url;
-    }
+    public String getIntro_url() { return intro_url; }
 
-    public void setIntro_url(String intro_url) {
-        this.intro_url = intro_url;
-    }
+    public void setIntro_url(String intro_url) { this.intro_url = intro_url; }
 
     public String getMedia_url() {
         return media_url;
     }
 
-    public void setMedia_url(String media_url) {
-        this.media_url = media_url;
-    }
+    public void setMedia_url(String media_url) { this.media_url = media_url; }
 
     public String getImg_url() {
         return img_url;
     }
 
     public void setImg_url(String img_url) {
+
         this.img_url = img_url;
     }
 

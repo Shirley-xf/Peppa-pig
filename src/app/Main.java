@@ -32,12 +32,12 @@ public class Main extends Application {
     private static FilteredList<MediaView> sMediaViewList;
     @Override
     public void start(Stage primaryStage) throws IOException {
+        TypeMenuController.initFilmParse();
         sPrimaryStage = primaryStage;
         sTypeMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
-        ObservableList children = sTypeMenuPane.getChildren();
-        initDefaultBtn(children);
         sTypeMenuScene = new Scene(sTypeMenuPane);
         sPrimaryStage.setScene(sTypeMenuScene);
+        TypeMenuController.setUpButtons();
         sPrimaryStage.show();
 
 
@@ -50,6 +50,8 @@ public class Main extends Application {
         sImgViewList = chrn.filtered(e -> e instanceof ImageView);
         sLabelList = chrn.filtered(e -> e instanceof Label);
         sMediaViewList = chrn.filtered(e -> e instanceof MediaView);
+
+
         runCustomSettings();
     }
 
@@ -98,10 +100,24 @@ public class Main extends Application {
     private static void showAllInfo(Film f) {
         System.out.println("show " + f);
 
-        StringBuilder sb = new StringBuilder("Introduction:");
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f.getIntro_url()))) {
-            byte[] buffer = new byte[1000];
-            while (bis.read(buffer) != -1) sb.append(buffer);
+        StringBuilder sb = new StringBuilder("Introduction:\n");
+        File intro_file = new File(f.getIntro_url()
+                .replace("file:", "")
+                .replace("%20", " "));
+        try {
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(intro_file));
+            char[] buffer = new char[25];
+            int lines = 0;
+            while (reader.read(buffer) != -1 && ++lines < 11) {
+                String tmp = new String(buffer);
+                int last_idx = tmp.lastIndexOf(" ");
+                sb.append(tmp.substring(0, last_idx) + "\n"
+                        + tmp.substring(last_idx + 1, tmp.length()));
+                if (lines == 10) {
+                    sb.delete(sb.lastIndexOf(".") + 1, sb.length());
+                }
+            }
+            sb.append("\n...");
         } catch (Exception e) {
             System.err.println("introduction " + e);
         }
@@ -109,8 +125,8 @@ public class Main extends Application {
         ImageView iv = sImgViewList.get(0);
 
         try  {
-            File file = new File(f.getImg_url());
-            Image img = new Image(file.toURI().toURL().toExternalForm());
+//            File file = new File(f.getImg_url());
+            Image img = new Image(f.getImg_url());
             iv.setImage(img);
         } catch (Exception e) {
             System.out.println(f.getImg_url());
@@ -122,15 +138,15 @@ public class Main extends Application {
 //        }
 
         sLabelList.get(0).setText(sb.toString());
-        sb = new StringBuilder("Actors: ");
+        sb = new StringBuilder("Actors:\n");
         List<String> actors = f.getActors();
         List<String> directors = f.getDirectors();
-        for (String s : actors) sb.append(s + " ");
-        sb.append("\nDirectors: ");
-        for (String s : directors) sb.append(s + " ");
-        sb.append("\nDuration: ");
-        sb.append(f.getDuration());
-        sb.append("\nYear: ");
+        for (String s : actors) sb.append(s + "\n");
+        sb.append("Directors:\n");
+        for (String s : directors) sb.append(s + "\n");
+        sb.append("Duration:\n");
+        sb.append(f.getDuration() + "\n");
+        sb.append("Year:\n");
         sb.append(f.getYear());
         sLabelList.get(1).setText(sb.toString());
 //
@@ -140,19 +156,5 @@ public class Main extends Application {
         sPrimaryStage.setScene(sTypeMenuScene);
         sPrimaryStage.show();
     }
-
-    private void initDefaultBtn(ObservableList oblst) {
-        FilteredList<Button> flst = oblst.filtered(e -> e instanceof Button);
-        for (Button btn : flst) {
-            switch (btn.getId()) {
-                case "type1":
-                    btn.setOnAction(e -> TypeMenuController.getFilmByType(btn.getText()));
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
 
 }
