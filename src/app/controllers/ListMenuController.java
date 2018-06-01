@@ -4,9 +4,7 @@ import app.Film;
 import app.Main;
 import dao.DbConnection;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 

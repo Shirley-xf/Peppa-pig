@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import app.controllers.*;
 
+import java.io.BufferedInputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,7 +19,6 @@ import java.util.List;
 public class CustomUtils {
     private CustomUtils() {}
     private static List<Customizable> sCustomList = new LinkedList<>();
-    private static Connection conn = DbConnection.getConnection();
     public static void addCustom(Customizable c) {
         sCustomList.add(c);
     }
@@ -37,7 +37,7 @@ public class CustomUtils {
             Button new_btn = new Button(text);
             new_btn.setId(text.toLowerCase());
             ObservableList children = p.getChildren();
-            FilteredList<Button> btn_list = children.filtered(Button -> true);
+            FilteredList<Button> btn_list = children.filtered(b -> b instanceof Button);
             Button last = btn_list.get(btn_list.size() - 1);
             int row = GridPane.getRowIndex(last);
             int col = GridPane.getColumnIndex(last);
@@ -55,19 +55,21 @@ public class CustomUtils {
         }
     }
 
-    public static boolean changeTypeNameById(String id, String text) {
+    public static boolean changeType(String old_text, String text) {
         GridPane p = (GridPane) Main.getMenuPane();
         ObservableList children = p.getChildren();
-        FilteredList<Button> btn_list = children.filtered(Button -> true);
+        FilteredList<Button> btn_list = children.filtered(b -> b instanceof Button);
 
         for (Button b : btn_list) {
-            if (b.getId().equals(id)) {
+            if (b.getText().equals(old_text)) {
                 try {
-                    Statement stmt = conn.createStatement();
-                    String cmd = "update `film` set `type` = \"" + text + "\" where `id` = " + id + ";";
+                    String cmd = "update `film` set `type` = \"" + text + "\" where `type` = " + old_text + ";";
                     b.setText(text);
-                    return stmt.execute(cmd);
+                    DbConnection.excute(cmd);
+
+                    return true;
                 } catch (Exception e) {
+                    e.printStackTrace();
                     return false;
                 }
 

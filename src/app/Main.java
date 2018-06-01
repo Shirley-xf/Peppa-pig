@@ -12,18 +12,14 @@ import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaView;
-import javafx.scene.text.TextFlow;
 import javafx.stage.*;
 
 
-import javax.imageio.stream.ImageInputStream;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
 
 public class Main extends Application {
-    private static boolean mKeyboardOnly = false; // 0 mouse, 1 key
     private static Pane sTypeMenuPane;
     private static SplitPane sFilmListPane;
     private static Stage sPrimaryStage;
@@ -84,19 +80,19 @@ public class Main extends Application {
         for (Film f : sFilmLinkedList) {
             obl_items.add(f);
         }
-        if (mKeyboardOnly) {
-            film_list_view.setOnMousePressed(event -> {
+        film_list_view.getSelectionModel().selectFirst();
+        film_list_view.setOnMousePressed(event -> {
+            Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
+            showAllInfo(f);
+        });
+
+        film_list_view.setOnKeyPressed(event -> {
+            if(event.getCode().isWhitespaceKey()) {
                 Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
                 showAllInfo(f);
-            });
-        } else {
-            film_list_view.setOnKeyPressed(event -> {
-                if(event.getCode().isWhitespaceKey()) {
-                    Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
-                    showAllInfo(f);
-                }
-            });
-        }
+            }
+        });
+
     }
 
     private static void showAllInfo(Film f) {
@@ -111,10 +107,11 @@ public class Main extends Application {
         }
 
         ImageView iv = sImgViewList.get(0);
-        File file = new File(f.getImg_url());
-        try  {
-            iv.setImage(new Image(file.toURI().toURL().toString(), true));
 
+        try  {
+            File file = new File(f.getImg_url());
+            Image img = new Image(file.toURI().toURL().toExternalForm());
+            iv.setImage(img);
         } catch (Exception e) {
             System.out.println(f.getImg_url());
             System.err.println("Image " + e);

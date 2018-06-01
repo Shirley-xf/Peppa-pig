@@ -11,7 +11,7 @@ public class DbConnection {
     public static void setDbUrl(String url) {
         db_url = url;
     }
-    public static Connection getConnection() {
+    private static Connection getConnection() {
         if (conn == null) {
             try {
                 Class.forName("org.sqlite.JDBC");
@@ -26,12 +26,12 @@ public class DbConnection {
     }
 
     public static void excute(String sql) throws SQLException {
-        Statement stmt = conn.createStatement();
+        Statement stmt = getConnection().createStatement();
         stmt.execute(sql);
     }
 
     public static ResultSet query(String sql) throws SQLException {
-        Statement stmt = conn.createStatement();
+        Statement stmt = getConnection().createStatement();
         return stmt.executeQuery(sql);
     }
 
