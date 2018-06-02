@@ -15,12 +15,12 @@ public class TypeMenuController {
 
     private static FilmInfoParser sFilmInfoParser;
 
-    public static void initFilmParse() {
-        sFilmInfoParser = new FilmInfoParser();
+    public static void initFilmParse(String path_to_dir) {
+        sFilmInfoParser = new FilmInfoParser(path_to_dir);
     }
 
     public static void getFilmByType(String text) {
-        System.out.println("getFilmByType" + " " + text);
+        System.out.println("getFilmByType " +text);
         Main.goToListMenuAndShow(text);
     }
 
@@ -44,8 +44,8 @@ public class TypeMenuController {
                 col = -1;
             }
             if (row == 2 && col == 3) {
-                System.err.println("Eight buttons are the most, cannot add types any more" +
-                        "Please concentrate your folders e.g create an other type");
+                System.err.println("Eight buttons are the most, cannot add types any more, " +
+                        "Please concentrate your folders e.g create an \"Other\" type");
             } else {
                 if (row == 1 && col == 3) {
                     GridPane.setRowIndex(btn, 2);

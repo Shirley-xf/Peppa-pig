@@ -16,7 +16,7 @@ public class FilmInfoParser {
     private static File[] sTypes;
     private static List<Button> sButtonList;
 
-    public FilmInfoParser(String... path_to_dir) {
+    public FilmInfoParser(String path_to_dir) {
         sButtonList = new LinkedList<>();
         parse(path_to_dir);
     }
@@ -36,11 +36,9 @@ public class FilmInfoParser {
     }
 
 
-    public void parse(String... path_to_data) {
-        if (path_to_data.length > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (String s : path_to_data) sb.append(s);
-            sDataPath = sb.toString();
+    public void parse(String path_to_data) {
+        if (path_to_data.length() > 0) {
+            sDataPath = path_to_data;
         } else {
             sDataPath = DEFAULT_DATA_PATH;
         }

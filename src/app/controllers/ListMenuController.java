@@ -4,6 +4,7 @@ import app.Film;
 import app.Main;
 import dao.DbConnection;
 
+import java.awt.*;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class ListMenuController {
         Main.goToTypeMenu();
     }
 
-    public static LinkedList<Film> queryFilmByType(String type) {
+    public static LinkedList<Film> setUpFilmByType(String type) {
         try {
             LinkedList<Film> lst = new LinkedList<>();
             String sql = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
@@ -68,18 +69,4 @@ public class ListMenuController {
             e.printStackTrace();
         }
     }
-
-//    public static void playFilm(Film f) {
-//        String qry = "select media_url from film where id = " + f.getId() + ";";
-//        try {
-//            ResultSet result = DbConnection.query(qry);
-//            if (result.next()) {
-//                Main.goToMediaPlayer(result.getString(1));
-//            } else {
-//                System.err.println("no such film");
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

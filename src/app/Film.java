@@ -16,6 +16,7 @@ public class Film {
     private List<String> actors;
     private List<String> directors;
 
+
     public List<String> getDirectors() {
         return directors;
     }
