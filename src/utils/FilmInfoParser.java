@@ -17,6 +17,7 @@ public class FilmInfoParser {
     private static List<Button> sButtonList;
 
     public FilmInfoParser(String... path_to_dir) {
+        sButtonList = new LinkedList<>();
         parse(path_to_dir);
     }
     public void readInfo(String path) {
@@ -154,13 +155,13 @@ public class FilmInfoParser {
 
     }
     public void addToTypeButtonList(File type_) {
-        sButtonList = new LinkedList<>();
         Button btn = new Button(type_.getName());
         btn.setId(type_.getName().toLowerCase());
         sButtonList.add(btn);
     }
 
     public List<Button> getButtonList() {
+
         return sButtonList;
     }
 

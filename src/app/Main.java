@@ -29,6 +29,8 @@ public class Main extends Application {
     private static Stage sPrimaryStage;
     private static Scene sFilmListScene;
     private static Scene sTypeMenuScene;
+    private static Scene sStartMenuScene;
+    private static Pane sStartMenuPane;
     private static List<Film> sFilmLinkedList;
     private static FilteredList<Node> sAnchorPaneList;
     private static FilteredList<ImageView> sImgViewList;
@@ -40,11 +42,14 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         TypeMenuController.initFilmParse();
         sPrimaryStage = primaryStage;
+        sStartMenuPane = FXMLLoader.load(getClass().getResource("startMenu.fxml"));
+        sStartMenuScene = new Scene(sStartMenuPane);
+        sPrimaryStage.setScene(sStartMenuScene);
+        sPrimaryStage.show();
+
         sTypeMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
         sTypeMenuScene = new Scene(sTypeMenuPane);
-        sPrimaryStage.setScene(sTypeMenuScene);
-        TypeMenuController.setUpButtons();
-        sPrimaryStage.show();
+
 
 
         sFilmListPane = FXMLLoader.load(getClass().getResource("listMenu.fxml"));
@@ -61,6 +66,7 @@ public class Main extends Application {
         sMediaViewList = chrn.filtered(e -> e instanceof MediaView);
         sOpBtnList = chrn.filtered(e -> e instanceof Button);
 
+        TypeMenuController.setUpButtons();
         for (Button btn : sOpBtnList) {
             if (btn.getId().equals("play")) btn.setOnAction(
                     e -> goToMediaPlayer((Film) sFilmListView
@@ -229,6 +235,11 @@ public class Main extends Application {
 
     public static void goToTypeMenu() {
         sPrimaryStage.setScene(sTypeMenuScene);
+        sPrimaryStage.show();
+    }
+
+    public static void goToStartMenu() {
+        sPrimaryStage.setScene(sStartMenuScene);
         sPrimaryStage.show();
     }
 

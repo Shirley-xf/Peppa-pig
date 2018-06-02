@@ -21,7 +21,7 @@
             <Button fx:id="back" layoutX="343.0" layoutY="371.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
             <Button fx:id="play" layoutX="11.0" layoutY="371.0" mnemonicParsing="false" text="Play" />
             <ImageView fx:id="poster" fitHeight="102.0" fitWidth="100.0" layoutX="33.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="intro" layoutY="150.0" prefHeight="220.0" prefWidth="189.0" />
+            <Label fx:id="intro" layoutY="150.0" prefHeight="220.0" prefWidth="220.0" />
             <MediaView fx:id="trailer" fitHeight="200.0" fitWidth="200.0" layoutX="208.0" />
             <Label fx:id="basicInfo" layoutX="249.0" layoutY="209.0" prefHeight="161.0" prefWidth="119.0" />
          </children></AnchorPane>
