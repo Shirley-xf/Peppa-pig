@@ -1,4 +1,4 @@
-package app;
+package app.datatype;
 
 public class Language {
     public String getName() {

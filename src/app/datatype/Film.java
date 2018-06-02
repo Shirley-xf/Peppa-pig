@@ -1,4 +1,4 @@
-package app;
+package app.datatype;
 
 import javafx.scene.Node;
 

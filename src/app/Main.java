@@ -2,6 +2,8 @@ package app;
 
 import app.controllers.ListMenuController;
 import app.controllers.TypeMenuController;
+import app.datatype.Film;
+import app.datatype.Language;
 import custom.*;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -131,6 +133,7 @@ public class Main extends Application {
     }
 
     public static void goToListMenuAndShow(String type) {
+
         sPrimaryStage.setScene(sFilmListScene);
         sFilmLinkedList = ListMenuController.setUpFilmByType(type);
         sFilmListView.getItems().clear();

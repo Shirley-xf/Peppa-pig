@@ -1,9 +1,8 @@
 package utils;
 
-import app.Language;
+import app.datatype.Language;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.*;
 
 public class PropertiesInfoParser {

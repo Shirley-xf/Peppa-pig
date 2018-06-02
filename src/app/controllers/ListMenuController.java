@@ -1,10 +1,9 @@
 package app.controllers;
 
-import app.Film;
+import app.datatype.Film;
 import app.Main;
 import dao.DbConnection;
 
-import java.awt.*;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
