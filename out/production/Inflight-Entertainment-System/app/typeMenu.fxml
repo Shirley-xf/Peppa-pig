@@ -23,7 +23,7 @@
     </rowConstraints>
     <children>
         <Button fx:id="go_back_btn" onAction="#goBack" mnemonicParsing="false" text="Back" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
-        <Button fx:id="main_menu_btn" onAction="#goToMainMenu" mnemonicParsing="false" text="Main Menu" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+        <Button fx:id="language" onAction="#changeLanguage" mnemonicParsing="false" text="Language" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
 
     </children>
 </GridPane>

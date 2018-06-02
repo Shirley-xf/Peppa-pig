@@ -47,7 +47,7 @@ public class FilmInfoParser {
         String sql;
         String[] all_infos = sContent.split("\n");
         File films_dir = new File(sDataPath + "/films");
-        sTypes = films_dir.listFiles();
+        sTypes = films_dir.listFiles(e -> e.getName().charAt(0) != '.');
         File intro_dir = new File(sDataPath + "/introductions");
         File img_dir = new File(sDataPath + "/pictures");
         FileOutputStream fos;
@@ -117,7 +117,7 @@ public class FilmInfoParser {
         }
         for (File type_ : sTypes) {
             try {
-                File[] films_in_dir = type_.listFiles();
+                File[] films_in_dir = type_.listFiles(e -> e.getName().charAt(0) != '.');
                 for (File film_ : films_in_dir) {
                     String film_media_name = film_.getName();
                     String film_name = film_media_name.substring(0, film_media_name.lastIndexOf("."));
@@ -136,7 +136,7 @@ public class FilmInfoParser {
             addToTypeButtonList(type_);
         }
 
-        File[] imgs = img_dir.listFiles();
+        File[] imgs = img_dir.listFiles(e -> e.getName().charAt(0) != '.');
         for (File img : imgs) {
             try {
                 String file_img_name = img.getName();

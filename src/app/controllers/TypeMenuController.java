@@ -27,8 +27,8 @@ public class TypeMenuController {
         System.out.println("goBack");
     }
 
-    public void goToMainMenu() {
-        System.out.println("goToMainMenu");
+    public void changeLanguage() {
+        System.out.println("changeLanguage");
     }
 
     public static void setUpButtons() {

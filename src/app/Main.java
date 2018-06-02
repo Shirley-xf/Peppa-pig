@@ -63,8 +63,7 @@ public class Main extends Application {
 
         for (Button btn : sOpBtnList) {
             if (btn.getId().equals("play")) btn.setOnAction(
-                    e -> ListMenuController
-                            .playFilm((Film) sFilmListView
+                    e -> goToMediaPlayer((Film) sFilmListView
                                     .getSelectionModel()
                                     .getSelectedItem()));
         }
@@ -120,14 +119,15 @@ public class Main extends Application {
     not implemented
      */
 
-    public static void goToMediaPlayer(String media_url) {
-        Media media = new Media(media_url);
+    public static void goToMediaPlayer(Film f) {
+        Media media = new Media(f.getMedia_url());
 //        int width = media.widthProperty().intValue();
 //        int height = media.heightProperty().intValue();
 
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         Button playButton = new Button(">");
+        Button backButton = new Button("back");
         playButton.setOnAction(e -> {
             if (playButton.getText().equals(">")) {
                 mediaPlayer.play();
@@ -137,23 +137,38 @@ public class Main extends Application {
                 playButton.setText(">");
             }
         });
+        backButton.setOnAction(e -> {
+            mediaPlayer.stop();
+            goToListMenuAndShow(f.getType());
+        });
         Button rewindButton = new Button("<<");
-        rewindButton.setOnAction(e -> mediaPlayer.seek(Duration.ZERO));
+        Button forwardButton = new Button(">>");
+        rewindButton.setOnAction(e -> mediaPlayer.seek(mediaPlayer
+                .getCurrentTime()
+                .subtract(Duration.minutes(1)))
+        );
+        forwardButton.setOnAction(e -> mediaPlayer.seek(mediaPlayer
+                .getCurrentTime()
+                .add(Duration.minutes(1)))
+        );
         Slider slVolume = new Slider();
         slVolume.setPrefWidth(150);
         slVolume.setMaxWidth(Region.USE_PREF_SIZE);
         slVolume.setMinWidth(30);
         slVolume.setValue(50);
         mediaPlayer.volumeProperty().bind(slVolume.valueProperty().divide(100));
-        HBox hBox = new HBox(10);
-        hBox.setAlignment(Pos.CENTER);
-        hBox.getChildren().addAll(playButton, rewindButton,
-                new Label("Volume"), slVolume);
+        HBox volume_box = new HBox();
+        HBox button_box = new HBox(10);
+        button_box.setAlignment(Pos.CENTER);
+        button_box.getChildren().addAll(playButton, rewindButton, forwardButton, backButton);
+        volume_box.getChildren().addAll(new Label("Volume"), slVolume);
         BorderPane pane = new BorderPane();
         pane.setCenter(mediaView);
-        pane.setBottom(hBox);
+        pane.setBottom(button_box);
+        pane.setTop(volume_box);
         Scene scene = new Scene(pane, 750, 500);
-        sPrimaryStage.setTitle("MediaDemo");
+        sPrimaryStage.setTitle(f.getMedia_url().substring(f.getMedia_url().lastIndexOf("/") + 1
+                , f.getMedia_url().length()).replace("%20", " "));
         sPrimaryStage.setScene(scene);
         sPrimaryStage.show();
     }

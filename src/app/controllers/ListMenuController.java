@@ -69,17 +69,17 @@ public class ListMenuController {
         }
     }
 
-    public static void playFilm(Film f) {
-        String qry = "select media_url from film where id = " + f.getId() + ";";
-        try {
-            ResultSet result = DbConnection.query(qry);
-            if (result.next()) {
-                Main.goToMediaPlayer(result.getString(1));
-            } else {
-                System.err.println("no such film");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void playFilm(Film f) {
+//        String qry = "select media_url from film where id = " + f.getId() + ";";
+//        try {
+//            ResultSet result = DbConnection.query(qry);
+//            if (result.next()) {
+//                Main.goToMediaPlayer(result.getString(1));
+//            } else {
+//                System.err.println("no such film");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
