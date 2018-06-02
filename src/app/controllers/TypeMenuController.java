@@ -6,10 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import utils.FilmInfoParser;
-
-import java.io.File;
 import java.util.List;
 
 
@@ -50,7 +47,8 @@ public class TypeMenuController {
                 col = -1;
             }
             if (row == 2 && col == 3) {
-                System.out.println("Eight buttons are the most, cannot add types any more");
+                System.out.println("Eight buttons are the most, cannot add types any more" +
+                        "Please concentrate your folders e.g create an other type");
             } else if (row == 1 && col == 3) {
                 GridPane.setRowIndex(btn,2);
                 GridPane.setColumnIndex(btn,0);

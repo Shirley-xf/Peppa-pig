@@ -49,8 +49,8 @@ public class ListMenuController {
 
     private static void addDirectorsAndActors(Film f) {
         try {
-            String actor_qry = "select `actor` from `film_actor` where `id` = \"" + f.getId() + "\";";
-            String director_qry = "select `director` from `film_director` where `id` = \"" + f.getId() + "\";";
+            String actor_qry = "select `actor` from `film_actor` where `id` = " + f.getId() + ";";
+            String director_qry = "select `director` from `film_director` where `id` = " + f.getId() + ";";
             ResultSet actor_set = DbConnection.query(actor_qry);
             ResultSet director_set = DbConnection.query(director_qry);
             List<String> tmp = new LinkedList<>();
@@ -64,6 +64,20 @@ public class ListMenuController {
             }
             f.setDirectors(tmp);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void playFilm(Film f) {
+        String qry = "select media_url from film where id = " + f.getId() + ";";
+        try {
+            ResultSet result = DbConnection.query(qry);
+            if (result.next()) {
+                Main.goToMediaPlayer(result.getString(1));
+            } else {
+                System.err.println("no such film");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

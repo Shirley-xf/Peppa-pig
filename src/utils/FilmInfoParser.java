@@ -89,16 +89,6 @@ public class FilmInfoParser {
                 int id = id_res.getInt(1);
                 int cnt = 0;
 
-                File[] imgs = img_dir.listFiles();
-                for (File img : imgs) {
-                    try {
-                        sql = "update film set img_url = \"" + img.toURI().toURL().toExternalForm() + "\" where id = " + id;
-                        DbConnection.exeUpdate(sql);
-                    } catch (Exception e) {
-                        System.err.println(e);
-                    }
-                }
-
                 for (String dirtr : directors) {
                     sql = "insert into film_director (id, director) values (" + id + ",\"" + dirtr + "\");";
                     try {
@@ -127,11 +117,14 @@ public class FilmInfoParser {
         }
         for (File type_ : sTypes) {
             try {
-                File[] films = type_.listFiles();
-                for (File film_ : films) {
-                    String film_name = film_.getName();
-                    sql = "update film set type = \"" + type_.getName() + "\" where name = \"" + film_name.substring(0, film_name.lastIndexOf(".")) + "\";";
+                File[] films_in_dir = type_.listFiles();
+                for (File film_ : films_in_dir) {
+                    String film_media_name = film_.getName();
+                    String film_name = film_media_name.substring(0, film_media_name.lastIndexOf("."));
                     try {
+                        sql = "update film set type = \"" + type_.getName() + "\" where name = \"" + film_name + "\";";
+                        DbConnection.exeUpdate(sql);
+                        sql = "update film set media_url = \"" + film_.toURI().toURL().toExternalForm() + "\" where name = \"" + film_name + "\";";
                         DbConnection.exeUpdate(sql);
                     } catch (Exception e) {
                         System.err.println(e);
@@ -142,6 +135,19 @@ public class FilmInfoParser {
             }
             addToTypeButtonList(type_);
         }
+
+        File[] imgs = img_dir.listFiles();
+        for (File img : imgs) {
+            try {
+                String file_img_name = img.getName();
+                sql = "update film set img_url = \"" + img.toURI().toURL().toExternalForm()
+                        + "\" where name = \"" + file_img_name.substring(0, file_img_name.lastIndexOf(".")) + "\";";
+                DbConnection.exeUpdate(sql);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
+        }
+
 
 
 

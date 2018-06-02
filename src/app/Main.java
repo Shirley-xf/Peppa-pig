@@ -7,12 +7,16 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.*;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.*;
+import javafx.util.Duration;
 
 
 import java.io.*;
@@ -30,6 +34,8 @@ public class Main extends Application {
     private static FilteredList<ImageView> sImgViewList;
     private static FilteredList<Label> sLabelList;
     private static FilteredList<MediaView> sMediaViewList;
+    private static FilteredList<Button> sOpBtnList;
+    private static ListView sFilmListView;
     @Override
     public void start(Stage primaryStage) throws IOException {
         TypeMenuController.initFilmParse();
@@ -45,12 +51,23 @@ public class Main extends Application {
         sFilmListScene = new Scene(sFilmListPane);
         sAnchorPaneList = sFilmListPane.getItems().filtered(e -> e instanceof AnchorPane);
 
+
+
         AnchorPane right = (AnchorPane) sAnchorPaneList.get(1);
+
         ObservableList chrn = right.getChildren();
         sImgViewList = chrn.filtered(e -> e instanceof ImageView);
         sLabelList = chrn.filtered(e -> e instanceof Label);
         sMediaViewList = chrn.filtered(e -> e instanceof MediaView);
+        sOpBtnList = chrn.filtered(e -> e instanceof Button);
 
+        for (Button btn : sOpBtnList) {
+            if (btn.getId().equals("play")) btn.setOnAction(
+                    e -> ListMenuController
+                            .playFilm((Film) sFilmListView
+                                    .getSelectionModel()
+                                    .getSelectedItem()));
+        }
 
         runCustomSettings();
     }
@@ -75,26 +92,70 @@ public class Main extends Application {
         sPrimaryStage.setScene(sFilmListScene);
         sPrimaryStage.show();
         AnchorPane left = (AnchorPane) sAnchorPaneList.get(0);
-        ListView film_list_view = (ListView) left.getChildren().get(0);
+        sFilmListView = (ListView) left.getChildren().get(0);
         sFilmLinkedList = ListMenuController.queryFilmByType(type);
-        film_list_view.getItems().clear();
-        ObservableList<Film> obl_items = film_list_view.getItems();
+        sFilmListView.getItems().clear();
+        ObservableList<Film> obl_items = sFilmListView.getItems();
         for (Film f : sFilmLinkedList) {
             obl_items.add(f);
         }
-        film_list_view.getSelectionModel().selectFirst();
-        film_list_view.setOnMousePressed(event -> {
-            Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
+        sFilmListView.getSelectionModel().selectFirst();
+        sFilmListView.setOnMousePressed(event -> {
+            Film f = (Film) sFilmListView.getSelectionModel().getSelectedItem();
             showAllInfo(f);
         });
 
-        film_list_view.setOnKeyPressed(event -> {
+        sFilmListView.setOnKeyPressed(event -> {
             if(event.getCode().isWhitespaceKey()) {
-                Film f = (Film) film_list_view.getSelectionModel().getSelectedItem();
+                Film f = (Film) sFilmListView.getSelectionModel().getSelectedItem();
                 showAllInfo(f);
             }
         });
 
+
+    }
+
+
+    /*
+    not implemented
+     */
+
+    public static void goToMediaPlayer(String media_url) {
+        Media media = new Media(media_url);
+//        int width = media.widthProperty().intValue();
+//        int height = media.heightProperty().intValue();
+
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        MediaView mediaView = new MediaView(mediaPlayer);
+        Button playButton = new Button(">");
+        playButton.setOnAction(e -> {
+            if (playButton.getText().equals(">")) {
+                mediaPlayer.play();
+                playButton.setText("||");
+            } else {
+                mediaPlayer.pause();
+                playButton.setText(">");
+            }
+        });
+        Button rewindButton = new Button("<<");
+        rewindButton.setOnAction(e -> mediaPlayer.seek(Duration.ZERO));
+        Slider slVolume = new Slider();
+        slVolume.setPrefWidth(150);
+        slVolume.setMaxWidth(Region.USE_PREF_SIZE);
+        slVolume.setMinWidth(30);
+        slVolume.setValue(50);
+        mediaPlayer.volumeProperty().bind(slVolume.valueProperty().divide(100));
+        HBox hBox = new HBox(10);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.getChildren().addAll(playButton, rewindButton,
+                new Label("Volume"), slVolume);
+        BorderPane pane = new BorderPane();
+        pane.setCenter(mediaView);
+        pane.setBottom(hBox);
+        Scene scene = new Scene(pane, 750, 500);
+        sPrimaryStage.setTitle("MediaDemo");
+        sPrimaryStage.setScene(scene);
+        sPrimaryStage.show();
     }
 
     private static void showAllInfo(Film f) {
