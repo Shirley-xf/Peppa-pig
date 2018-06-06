@@ -7,11 +7,16 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,25 +26,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ListMenuController {
-
-    public SplitPane getFilmListSplitPane() {
-        return filmListSplitPane;
-    }
-
-    public ImageView getImageView() {
-        return poster;
-    }
-
-    public Scene getScene() {
-        if (scene == null) {
-            scene = new Scene(this.filmListSplitPane);
-        }
-        return scene;
-    }
-
     private Scene scene;
     @FXML private SplitPane filmListSplitPane;
     @FXML private ImageView poster;
+    @FXML private Button back;
+    @FXML private Button play;
+    @FXML private MediaView trailer;
+    @FXML private Label intro;
+    @FXML private Label basicInfo;
 
     public void goBack() {
         Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
@@ -47,8 +41,19 @@ public class ListMenuController {
     }
 
     public void showAllInfo(Film f) {
-        System.out.println("show " + f);
 
+
+
+        // Poster
+        try {
+            Image img = new Image(f.getImg_url());
+            poster.setImage(img);
+        } catch (Exception e) {
+            System.out.println(f.getImg_url());
+            System.err.println("Image " + e);
+        }
+
+        // Text：
         StringBuilder sb = new StringBuilder("Introduction:\n");
         File intro_file = new File(f.getIntro_url()
                 .replace("file:", "")
@@ -75,19 +80,9 @@ public class ListMenuController {
             System.err.println("introduction " + e);
         }
 
-        ImageView iv = Main.getsListMenuController().getImageView();
+        intro.setText(sb.toString());
 
-        try {
-            Image img = new Image(f.getImg_url());
-            iv.setImage(img);
-        } catch (Exception e) {
-            System.out.println(f.getImg_url());
-            System.err.println("Image " + e);
-        }
-        ObservableList chrd = ((AnchorPane)filmListSplitPane.getItems()
-                .get(1)).getChildren();
-        FilteredList<Label> label_list = chrd.filtered(e -> e instanceof Label);
-        label_list.get(0).setText(sb.toString());
+
         sb = new StringBuilder("Actors:\n");
         List<String> actors = f.getActors();
         List<String> directors = f.getDirectors();
@@ -98,7 +93,17 @@ public class ListMenuController {
         sb.append(f.getDuration() + "\n");
         sb.append("Year: ");
         sb.append((f.getYear() == 0) ? "" : f.getYear());
-        label_list.get(1).setText(sb.toString());
+        basicInfo.setText(sb.toString());
+
+        // Trailer
+        Media media = new Media(f.getMedia_url());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+        trailer.setMediaPlayer(mediaPlayer);
+        mediaPlayer.setRate(3);
+        mediaPlayer.setStartTime(new Duration(10000));
+        mediaPlayer.setStopTime(new Duration(30000));
+        mediaPlayer.play();
     }
 
 
@@ -154,4 +159,16 @@ public class ListMenuController {
             e.printStackTrace();
         }
     }
+    public SplitPane getFilmListSplitPane() {
+        return filmListSplitPane;
+    }
+
+
+    public Scene getScene() {
+        if (scene == null) {
+            scene = new Scene(this.filmListSplitPane);
+        }
+        return scene;
+    }
+
 }

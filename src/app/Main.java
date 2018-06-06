@@ -36,8 +36,8 @@ public class Main extends Application {
     private static StartMenuController sStartMenuController;
     private static LanguageMenuController sLanguageMenuController;
 
-    private List<Film> sFilmLinkedList;
-    private List<Language> sLanguageLinkedList;
+    private List<Film> mFilmLinkedList;
+    private List<Language> mLanguageLinkedList;
 
     private static String sFilmPath = "";
     private static String sPropPath = "";
@@ -48,7 +48,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         runCustomSettingsAtPrev();
         try {
-            sLanguageLinkedList = PropertiesInfoParser.getPropertiesList(sPropPath);
+            mLanguageLinkedList = PropertiesInfoParser.getPropertiesList(sPropPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,19 +66,21 @@ public class Main extends Application {
         lang_menu_loader.load();
         sLanguageMenuController = lang_menu_loader.getController();
         ListView<Language> lan_lst_view = (ListView) sLanguageMenuController.getLanguagePane().getChildren().get(0);
-        sLanguageLinkedList.forEach(lan_lst_view.getItems()::add);
+        mLanguageLinkedList.forEach(lan_lst_view.getItems()::add);
 
         type_menu_loader.load();
         sTypeMenuController = type_menu_loader.getController();
         list_menu_loader.load();
         sListMenuController = list_menu_loader.getController();
         FilteredList anchor_panes = sListMenuController.getFilmListSplitPane().getItems().filtered(e -> e instanceof AnchorPane);
+
+        // Need to be refactored
         AnchorPane left = (AnchorPane) anchor_panes.get(0);
         ListView<Film> filmListView = (ListView) left.getChildren().get(0);
         AnchorPane right = (AnchorPane) anchor_panes.get(1);
 
-        ObservableList chrn = right.getChildren();
-        FilteredList op_btns = chrn.filtered(e -> e instanceof Button);
+        ObservableList chrd = right.getChildren();
+        FilteredList op_btns = chrd.filtered(e -> e instanceof Button);
 
         sTypeMenuController.setUpButtons();
         for (Button btn : (FilteredList<Button>) op_btns) {
