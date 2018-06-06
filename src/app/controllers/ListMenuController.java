@@ -104,7 +104,7 @@ public class ListMenuController {
 
     public LinkedList<Film> setUpFilmByType(String type) {
         try {
-            LinkedList<Film> lst = new LinkedList<>();
+            LinkedList<Film> film_list = new LinkedList<>();
             String sql = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
             ResultSet films_result = DbConnection.query(sql);
             try {
@@ -119,9 +119,9 @@ public class ListMenuController {
                     f.setMedia_url(films_result.getString(7));
                     f.setImg_url(films_result.getString(8));
                     addDirectorsAndActors(f);
-                    lst.add(f);
+                    film_list.add(f);
                 }
-                return lst;
+                return film_list;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

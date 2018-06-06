@@ -39,7 +39,6 @@ public class Main extends Application {
     private List<Film> sFilmLinkedList;
     private List<Language> sLanguageLinkedList;
 
-    private ListView<Language> mLanguageListView;
     private static String sFilmPath = "";
     private static String sPropPath = "";
 
@@ -66,23 +65,8 @@ public class Main extends Application {
 
         lang_menu_loader.load();
         sLanguageMenuController = lang_menu_loader.getController();
-        mLanguageListView = (ListView) sLanguageMenuController.getLanguagePane().getChildren().get(0);
-        sLanguageLinkedList.forEach(mLanguageListView.getItems()::add);
-
-
-        mLanguageListView.setOnMousePressed(e -> {
-            Language lan = mLanguageListView.getSelectionModel().getSelectedItem();
-            setLanguage(lan);
-            primaryStage.setScene(sStartMenuController.getScene());
-        });
-
-        mLanguageListView.setOnKeyPressed(e -> {
-            if (e.getCode().isWhitespaceKey()) {
-                Language lan = mLanguageListView.getSelectionModel().getSelectedItem();
-                setLanguage(lan);
-                primaryStage.setScene(sStartMenuController.getScene());
-            }
-        });
+        ListView<Language> lan_lst_view = (ListView) sLanguageMenuController.getLanguagePane().getChildren().get(0);
+        sLanguageLinkedList.forEach(lan_lst_view.getItems()::add);
 
         type_menu_loader.load();
         sTypeMenuController = type_menu_loader.getController();
@@ -182,11 +166,7 @@ public class Main extends Application {
 
 
 
-    public void setLanguage(Language lan) {
-        System.out.println(lan.getName());
-        String pro_url = lan.getProperties_url();
-        // 设置properties
-    }
+
 
     public static Stage getPrimaryStage() {
         return sPrimaryStage;
