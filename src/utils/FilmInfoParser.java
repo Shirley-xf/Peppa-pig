@@ -14,12 +14,10 @@ public class FilmInfoParser {
     private static String sContent;
     private static String sDataPath;
     private static File[] sTypes;
-    private static List<Button> sButtonList;
+    private static List<Button> sButtonList = new LinkedList<>();
 
-    public FilmInfoParser(String path_to_dir) {
-        sButtonList = new LinkedList<>();
-        parse(path_to_dir);
-    }
+    public FilmInfoParser() {}
+
     public void readInfo(String path) {
         byte[] buffer;
         StringBuilder sb = new StringBuilder();
@@ -147,10 +145,6 @@ public class FilmInfoParser {
             }
         }
 
-
-
-
-
     }
     public void addToTypeButtonList(File type_) {
         Button btn = new Button(type_.getName());
@@ -158,12 +152,12 @@ public class FilmInfoParser {
         sButtonList.add(btn);
     }
 
-    public List<Button> getButtonList() {
+    public static List<Button> getButtonList() {
 
         return sButtonList;
     }
 
-    public String getDataPath() {
+    public static String getDataPath() {
         return sDataPath;
     }
 }

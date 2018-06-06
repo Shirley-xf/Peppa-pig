@@ -2,35 +2,81 @@ package app.controllers;
 
 
 import app.Main;
+import app.datatype.Film;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import utils.FilmInfoParser;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 
 public class TypeMenuController {
 
-    private static FilmInfoParser sFilmInfoParser;
-
-    public static void initFilmParse(String path_to_dir) {
-        sFilmInfoParser = new FilmInfoParser(path_to_dir);
+    public GridPane getTypeMenuPane() {
+        return typeMenuPane;
     }
 
-    public static void getFilmByType(String text) {
+    public Scene getScene() {
+        if (scene == null) {
+            scene = new Scene(this.typeMenuPane);
+        }
+        return scene;
+    }
+
+    private Scene scene;
+    @FXML private GridPane typeMenuPane;
+
+
+    public void getFilmByType(String text) {
         System.out.println("getFilmByType " +text);
-        Main.goToListMenuAndShow(text);
+        goToListMenuAndShow(text);
+    }
+
+    public void goToListMenuAndShow(String type) {
+        Stage ps = Main.getPrimaryStage();
+        SplitPane sp_pane = Main.getmListMenuController().getFilmListSplitPane();
+        ps.setScene(Main.getmListMenuController().getScene());
+        List<Film> sFilmLinkedList = Main.getmListMenuController().setUpFilmByType(type);
+        ListView<Film> list_view = (ListView<Film>) ((AnchorPane) sp_pane.getItems().get(0)).getChildren().get(0);
+        list_view.getItems().clear();
+        sFilmLinkedList.forEach(list_view.getItems()::add);
+        list_view.getSelectionModel().selectFirst();
+        list_view.setOnMousePressed(event -> {
+            Film f = list_view.getSelectionModel().getSelectedItem();
+            Main.getmListMenuController().showAllInfo(f);
+        });
+
+        list_view.setOnKeyPressed(event -> {
+            if (event.getCode().isWhitespaceKey()) {
+                Film f = list_view.getSelectionModel().getSelectedItem();
+                Main.getmListMenuController().showAllInfo(f);
+            }
+        });
+        Main.getPrimaryStage().show();
+
     }
 
     public void goBack() {
-        Main.goToStartMenu();
+        Main.getPrimaryStage().setScene(Main.getmStartMenuController().getScene());
     }
 
-    public static void setUpButtons() {
-        List<Button> btn_list = sFilmInfoParser.getButtonList();
-        GridPane this_pane = (GridPane) Main.getMenuPane();
+    public void setUpButtons() {
+        List<Button> btn_list = FilmInfoParser.getButtonList();
+        GridPane this_pane = (GridPane) Main.getmTypeMenuController().getTypeMenuPane();
         for (Button btn : btn_list) {
             ObservableList chrd = this_pane.getChildren();
             FilteredList<Button> chrd_btn_list = chrd.filtered(e -> e instanceof Button);
@@ -55,9 +101,9 @@ public class TypeMenuController {
                     GridPane.setColumnIndex(btn, col + 1);
                 }
                 GridPane.setHalignment(btn, HPos.CENTER);
-                btn.setOnAction(e -> TypeMenuController.getFilmByType(btn.getText()));
+                btn.setOnAction(e -> getFilmByType(btn.getText()));
                 this_pane.getChildren().add(btn);
+                }
             }
         }
     }
-}

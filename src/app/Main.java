@@ -1,6 +1,8 @@
 package app;
 
+import app.controllers.LanguageMenuController;
 import app.controllers.ListMenuController;
+import app.controllers.StartMenuController;
 import app.controllers.TypeMenuController;
 import app.datatype.Film;
 import app.datatype.Language;
@@ -19,6 +21,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.*;
 import javafx.util.Duration;
+import utils.FilmInfoParser;
 import utils.PropertiesInfoParser;
 
 
@@ -27,25 +30,38 @@ import java.util.*;
 
 
 public class Main extends Application {
-    private static Pane sTypeMenuPane;
-    private static Pane sLanguageMenuPane;
-    private static SplitPane sFilmListAndInfoPane;
-    private static Stage sPrimaryStage;
-    private static Scene sFilmListScene;
-    private static Scene sTypeMenuScene;
-    private static Scene sStartMenuScene;
-    private static Scene sLanguageMenuScene;
 
-    private static Pane sStartMenuPane;
-    private static List<Film> sFilmLinkedList;
-    private static List<Language> sLanguageLinkedList;
-    private static FilteredList<Node> sAnchorPaneList;
-    private static FilteredList<ImageView> sImgViewList;
-    private static FilteredList<Label> sLabelList;
-    private static FilteredList<MediaView> sMediaViewList;
-    private static FilteredList<Button> sOpBtnList;
-    private static ListView<Film> sFilmListView;
-    private static ListView<Language> sLanguageListView;
+
+    private static Stage sPrimaryStage;
+    private static TypeMenuController mTypeMenuController;
+    private static ListMenuController mListMenuController;
+    private static StartMenuController mStartMenuController;
+    private static LanguageMenuController mLanguageMenuController;
+
+
+
+
+    private Pane sTypeMenuPane;
+    private Pane sLanguageMenuPane;
+    private SplitPane sFilmListAndInfoPane;
+
+    private Scene sFilmListScene;
+    private Scene sTypeMenuScene;
+    private Scene sStartMenuScene;
+    private Scene sLanguageMenuScene;
+
+
+
+    private Pane sStartMenuPane;
+    private List<Film> sFilmLinkedList;
+    private List<Language> sLanguageLinkedList;
+    private FilteredList<Node> sAnchorPaneList;
+    private FilteredList<ImageView> sImgViewList;
+    private FilteredList<Label> sLabelList;
+    private FilteredList<MediaView> sMediaViewList;
+    private FilteredList<Button> sOpBtnList;
+    private ListView<Film> sFilmListView;
+    private ListView<Language> sLanguageListView;
     private static String sFilmPath = "";
     private static String sPropPath = "";
 
@@ -54,44 +70,57 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) throws IOException {
         runCustomSettings();
-        TypeMenuController.initFilmParse(sFilmPath);
+
         try {
             sLanguageLinkedList = PropertiesInfoParser.getPropertiesList(sPropPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
         sPrimaryStage = primaryStage;
-        sStartMenuPane = FXMLLoader.load(getClass().getResource("startMenu.fxml"));
-        sStartMenuScene = new Scene(sStartMenuPane);
+        FXMLLoader start_menu_loader = new FXMLLoader(getClass().getResource("startMenu.fxml"));
+        FXMLLoader lang_menu_loader = new FXMLLoader(getClass().getResource("languageMenu.fxml"));
+        FXMLLoader type_menu_loader = new FXMLLoader(getClass().getResource("typeMenu.fxml"));
+        FXMLLoader list_menu_loader = new FXMLLoader(getClass().getResource("listMenu.fxml"));
+
+        sStartMenuPane = start_menu_loader.load();
+//        sStartMenuPane = FXMLLoader.load(getClass().getResource("startMenu.fxml"));
+        mStartMenuController = start_menu_loader.getController();
+
+        sStartMenuScene = mStartMenuController.getScene();
         sPrimaryStage.setScene(sStartMenuScene);
         sPrimaryStage.show();
 
-        sLanguageMenuPane = FXMLLoader.load(getClass().getResource("languageMenu.fxml"));
-
-        sLanguageMenuScene = new Scene(sLanguageMenuPane);
+//        sLanguageMenuPane = FXMLLoader.load(getClass().getResource("languageMenu.fxml"));
+        sLanguageMenuPane = lang_menu_loader.load();
+        mLanguageMenuController = lang_menu_loader.getController();
+        sLanguageMenuScene = mLanguageMenuController.getScene();
         sLanguageListView = (ListView) sLanguageMenuPane.getChildren().get(0);
         sLanguageLinkedList.forEach(sLanguageListView.getItems()::add);
 
 
         sLanguageListView.setOnMousePressed(e -> {
-            Language lan = (Language) sLanguageListView.getSelectionModel().getSelectedItem();
+            Language lan = sLanguageListView.getSelectionModel().getSelectedItem();
             setLanguage(lan);
-            goToStartMenu();
+            primaryStage.setScene(mStartMenuController.getScene());
         });
 
         sLanguageListView.setOnKeyPressed(e -> {
             if (e.getCode().isWhitespaceKey()) {
-                Language lan = (Language) sLanguageListView.getSelectionModel().getSelectedItem();
+                Language lan = sLanguageListView.getSelectionModel().getSelectedItem();
                 setLanguage(lan);
-                goToStartMenu();
+                primaryStage.setScene(mStartMenuController.getScene());
             }
         });
 
-        sTypeMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
-        sTypeMenuScene = new Scene(sTypeMenuPane);
+//        sTypeMenuPane = FXMLLoader.load(getClass().getResource("typeMenu.fxml"));
+        sTypeMenuPane = type_menu_loader.load();
+        mTypeMenuController = type_menu_loader.getController();
+        sTypeMenuScene = mTypeMenuController.getScene();
 
-        sFilmListAndInfoPane = FXMLLoader.load(getClass().getResource("listMenu.fxml"));
-        sFilmListScene = new Scene(sFilmListAndInfoPane);
+//        sFilmListAndInfoPane = FXMLLoader.load(getClass().getResource("listMenu.fxml"));
+        sFilmListAndInfoPane = list_menu_loader.load();
+        mListMenuController = list_menu_loader.getController();
+        sFilmListScene = mListMenuController.getScene();
 
         sAnchorPaneList = sFilmListAndInfoPane.getItems().filtered(e -> e instanceof AnchorPane);
         AnchorPane left = (AnchorPane) sAnchorPaneList.get(0);
@@ -104,10 +133,10 @@ public class Main extends Application {
         sMediaViewList = chrn.filtered(e -> e instanceof MediaView);
         sOpBtnList = chrn.filtered(e -> e instanceof Button);
 
-        TypeMenuController.setUpButtons();
+        mTypeMenuController.setUpButtons();
         for (Button btn : sOpBtnList) {
             if (btn.getId().equals("play")) btn.setOnAction(
-                    e -> goToMediaPlayer((Film) sFilmListView
+                    e -> goToMediaPlayer(sFilmListView
                                     .getSelectionModel()
                                     .getSelectedItem()));
         }
@@ -115,11 +144,6 @@ public class Main extends Application {
 
 
     }
-
-    public static Pane getMenuPane() {
-        return sTypeMenuPane;
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -132,34 +156,34 @@ public class Main extends Application {
         }
     }
 
-    public static void goToListMenuAndShow(String type) {
-
-        sPrimaryStage.setScene(sFilmListScene);
-        sFilmLinkedList = ListMenuController.setUpFilmByType(type);
-        sFilmListView.getItems().clear();
-        sFilmLinkedList.forEach(sFilmListView.getItems()::add);
-        sFilmListView.getSelectionModel().selectFirst();
-        sFilmListView.setOnMousePressed(event -> {
-            Film f = sFilmListView.getSelectionModel().getSelectedItem();
-            showAllInfo(f);
-        });
-
-        sFilmListView.setOnKeyPressed(event -> {
-            if (event.getCode().isWhitespaceKey()) {
-                Film f = sFilmListView.getSelectionModel().getSelectedItem();
-                showAllInfo(f);
-            }
-        });
-        sPrimaryStage.show();
-
-    }
+//    public void goToListMenuAndShow(String type) {
+//
+//        sPrimaryStage.setScene(sFilmListScene);
+//        sFilmLinkedList = mListMenuController.setUpFilmByType(type);
+//        sFilmListView.getItems().clear();
+//        sFilmLinkedList.forEach(sFilmListView.getItems()::add);
+//        sFilmListView.getSelectionModel().selectFirst();
+//        sFilmListView.setOnMousePressed(event -> {
+//            Film f = sFilmListView.getSelectionModel().getSelectedItem();
+//            showAllInfo(f);
+//        });
+//
+//        sFilmListView.setOnKeyPressed(event -> {
+//            if (event.getCode().isWhitespaceKey()) {
+//                Film f = sFilmListView.getSelectionModel().getSelectedItem();
+//                showAllInfo(f);
+//            }
+//        });
+//        sPrimaryStage.show();
+//
+//    }
 
 
     /*
     not implemented
      */
 
-    public static void goToMediaPlayer(Film f) {
+    public void goToMediaPlayer(Film f) {
         Media media = new Media(f.getMedia_url());
 //        int width = media.widthProperty().intValue();
 //        int height = media.heightProperty().intValue();
@@ -179,8 +203,9 @@ public class Main extends Application {
         });
         backButton.setOnAction(e -> {
             mediaPlayer.stop();
-            goToListMenuAndShow(f.getType());
+            mTypeMenuController.goToListMenuAndShow(f.getType());
         });
+
         Button rewindButton = new Button("<<");
         Button forwardButton = new Button(">>");
         rewindButton.setOnAction(e -> mediaPlayer.seek(mediaPlayer
@@ -206,89 +231,42 @@ public class Main extends Application {
         pane.setCenter(mediaView);
         pane.setBottom(button_box);
         pane.setTop(volume_box);
-        Scene scene = new Scene(pane, 750, 500);
+        Scene scene = new Scene(pane, 600, 400);
         sPrimaryStage.setTitle(f.getMedia_url().substring(f.getMedia_url().lastIndexOf("/") + 1
                 , f.getMedia_url().length()).replace("%20", " "));
         sPrimaryStage.setScene(scene);
         sPrimaryStage.show();
     }
 
-    private static void showAllInfo(Film f) {
-        System.out.println("show " + f);
 
-        StringBuilder sb = new StringBuilder("Introduction:\n");
-        File intro_file = new File(f.getIntro_url()
-                .replace("file:", "")
-                .replace("%20", " "));
-        try {
-            InputStreamReader reader = new InputStreamReader(new FileInputStream(intro_file));
-            char[] buffer = new char[25];
-            int lines = 0;
-            while (reader.read(buffer) != -1 && ++lines < 11) {
-                String tmp = new String(buffer);
-                int last_idx = tmp.lastIndexOf(" ");
-                if (last_idx != -1) {
-                    sb.append(tmp.substring(0, last_idx) + "\n"
-                            + tmp.substring(last_idx + 1, tmp.length()));
-                } else {
-                    sb.append(tmp + "\n");
-                }
-                if (lines == 10) {
-                    sb.delete(sb.lastIndexOf(".") + 1, sb.length());
-                }
-            }
-            sb.append("\n...");
-        } catch (Exception e) {
-            System.err.println("introduction " + e);
-        }
 
-        ImageView iv = sImgViewList.get(0);
-
-        try  {
-            Image img = new Image(f.getImg_url());
-            iv.setImage(img);
-        } catch (Exception e) {
-            System.out.println(f.getImg_url());
-            System.err.println("Image " + e);
-        }
-
-//        try {
-//            sMediaViewList.set(0, new MediaView(new Med))
-//        }
-
-        sLabelList.get(0).setText(sb.toString());
-        sb = new StringBuilder("Actors:\n");
-        List<String> actors = f.getActors();
-        List<String> directors = f.getDirectors();
-        for (String s : actors) sb.append(s + "\n");
-        sb.append("Directors:\n");
-        for (String s : directors) sb.append(s + "\n");
-        sb.append("Duration: ");
-        sb.append(f.getDuration() + "\n");
-        sb.append("Year: ");
-        sb.append((f.getYear() == 0) ? "" : f.getYear());
-        sLabelList.get(1).setText(sb.toString());
-//
-    }
-
-    public static void goToTypeMenu() {
-        sPrimaryStage.setScene(sTypeMenuScene);
-        sPrimaryStage.show();
-    }
-
-    public static void goToStartMenu() {
-        sPrimaryStage.setScene(sStartMenuScene);
-        sPrimaryStage.show();
-    }
-
-    public static void goToLanguageMenu() {
-        sPrimaryStage.setScene(sLanguageMenuScene);
-        sPrimaryStage.show();
-    }
-
-    public static void setLanguage(Language lan) {
+    public void setLanguage(Language lan) {
         System.out.println(lan.getName());
         String pro_url = lan.getProperties_url();
         // 设置properties
+    }
+
+    public static Stage getPrimaryStage() {
+        return sPrimaryStage;
+    }
+
+    public static ListMenuController getmListMenuController() {
+        return mListMenuController;
+    }
+
+    public static StartMenuController getmStartMenuController() {
+        return mStartMenuController;
+    }
+
+
+
+    public static TypeMenuController getmTypeMenuController() {
+        return mTypeMenuController;
+    }
+
+
+
+    public static LanguageMenuController getmLanguageMenuController() {
+        return mLanguageMenuController;
     }
 }
