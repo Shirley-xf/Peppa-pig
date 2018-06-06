@@ -21,10 +21,10 @@ public class StartMenuController {
     private Scene scene;
     @FXML private GridPane startGridPane;
     public void goToTypeMenu() {
-        Main.getPrimaryStage().setScene(Main.getmTypeMenuController().getScene());
+        Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
     }
 
     public void goToLanguageMenu() {
-        Main.getPrimaryStage().setScene(Main.getmLanguageMenuController().getScene());
+        Main.getPrimaryStage().setScene(Main.getsLanguageMenuController().getScene());
     }
 }

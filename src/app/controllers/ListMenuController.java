@@ -6,25 +6,19 @@ import dao.DbConnection;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class ListMenuController {
 
@@ -48,7 +42,7 @@ public class ListMenuController {
     @FXML private ImageView poster;
 
     public void goBack() {
-        Main.getPrimaryStage().setScene(Main.getmTypeMenuController().getScene());
+        Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
         Main.getPrimaryStage().show();
     }
 
@@ -81,7 +75,7 @@ public class ListMenuController {
             System.err.println("introduction " + e);
         }
 
-        ImageView iv = Main.getmListMenuController().getImageView();
+        ImageView iv = Main.getsListMenuController().getImageView();
 
         try {
             Image img = new Image(f.getImg_url());

@@ -11,16 +11,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import utils.FilmInfoParser;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 
@@ -48,22 +43,22 @@ public class TypeMenuController {
 
     public void goToListMenuAndShow(String type) {
         Stage ps = Main.getPrimaryStage();
-        SplitPane sp_pane = Main.getmListMenuController().getFilmListSplitPane();
-        ps.setScene(Main.getmListMenuController().getScene());
-        List<Film> sFilmLinkedList = Main.getmListMenuController().setUpFilmByType(type);
+        SplitPane sp_pane = Main.getsListMenuController().getFilmListSplitPane();
+        ps.setScene(Main.getsListMenuController().getScene());
+        List<Film> filmLinkedList = Main.getsListMenuController().setUpFilmByType(type);
         ListView<Film> list_view = (ListView<Film>) ((AnchorPane) sp_pane.getItems().get(0)).getChildren().get(0);
         list_view.getItems().clear();
-        sFilmLinkedList.forEach(list_view.getItems()::add);
+        filmLinkedList.forEach(list_view.getItems()::add);
         list_view.getSelectionModel().selectFirst();
         list_view.setOnMousePressed(event -> {
             Film f = list_view.getSelectionModel().getSelectedItem();
-            Main.getmListMenuController().showAllInfo(f);
+            Main.getsListMenuController().showAllInfo(f);
         });
 
         list_view.setOnKeyPressed(event -> {
             if (event.getCode().isWhitespaceKey()) {
                 Film f = list_view.getSelectionModel().getSelectedItem();
-                Main.getmListMenuController().showAllInfo(f);
+                Main.getsListMenuController().showAllInfo(f);
             }
         });
         Main.getPrimaryStage().show();
@@ -71,12 +66,12 @@ public class TypeMenuController {
     }
 
     public void goBack() {
-        Main.getPrimaryStage().setScene(Main.getmStartMenuController().getScene());
+        Main.getPrimaryStage().setScene(Main.getsStartMenuController().getScene());
     }
 
     public void setUpButtons() {
         List<Button> btn_list = FilmInfoParser.getButtonList();
-        GridPane this_pane = (GridPane) Main.getmTypeMenuController().getTypeMenuPane();
+        GridPane this_pane = Main.getsTypeMenuController().getTypeMenuPane();
         for (Button btn : btn_list) {
             ObservableList chrd = this_pane.getChildren();
             FilteredList<Button> chrd_btn_list = chrd.filtered(e -> e instanceof Button);
