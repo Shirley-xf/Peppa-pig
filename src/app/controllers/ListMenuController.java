@@ -91,8 +91,14 @@ public class ListMenuController {
         for (String s : directors) sb.append(s + "\n");
         sb.append("Duration: ");
         sb.append(f.getDuration() + "\n");
-        sb.append("Year: ");
-        sb.append((f.getYear() == 0) ? "" : f.getYear());
+//        sb.append("Year: ");
+//        sb.append((f.getYear() == 0) ? "" : f.getYear());
+        if (f.getYear() != 0) {
+            sb.append("Year: " + f.getYear() + "\n");
+        }
+        if (f.getCountry() != null) {
+            sb.append("Country: " + f.getCountry() + "\n");
+        }
         basicInfo.setText(sb.toString());
 
         // Trailer
@@ -110,7 +116,7 @@ public class ListMenuController {
     public LinkedList<Film> setUpFilmByType(String type) {
         try {
             LinkedList<Film> film_list = new LinkedList<>();
-            String sql = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url` from `film` where `type` = \"" + type + "\"";
+            String sql = "select `id`, `name`, `duration`, `year`, `type`, `intro_url`, `media_url`, `img_url`, `country` from `film` where `type` = \"" + type + "\"";
             ResultSet films_result = DbConnection.query(sql);
             try {
                 while (films_result.next()) {
@@ -123,6 +129,7 @@ public class ListMenuController {
                     f.setIntro_url(films_result.getString(6));
                     f.setMedia_url(films_result.getString(7));
                     f.setImg_url(films_result.getString(8));
+                    f.setCountry(films_result.getString(9));
                     addDirectorsAndActors(f);
                     film_list.add(f);
                 }

@@ -9,6 +9,7 @@ public class Film {
     private String name;
     private String duration;
     private int year;
+    private String country;
     private String type;
     private String intro_url;
     private String media_url;
@@ -16,6 +17,15 @@ public class Film {
     private List<String> actors;
     private List<String> directors;
 
+
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public List<String> getDirectors() {
         return directors;

@@ -157,6 +157,24 @@ public class FilmInfoParser {
         return sButtonList;
     }
 
+    public static void setYear(String name, int year) {
+        String sql = "update film set year = " + year + " where name = \"" + name + "\";";
+        try {
+            DbConnection.exeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setCountry(String name, String country) {
+        String sql = "update film set country = \"" + country + "\" where name = \"" + name + "\";";
+        try {
+            DbConnection.exeUpdate(sql);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String getDataPath() {
         return sDataPath;
     }

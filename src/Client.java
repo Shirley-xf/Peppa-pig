@@ -8,6 +8,10 @@ public class Client {
         CustomUtils.addCustomToPrev(() -> {
             new FilmInfoParser().parse("");
         });
+        CustomUtils.addCustomToPost(() -> {
+            FilmInfoParser.setYear("Pulp Fiction", 2010);
+            FilmInfoParser.setCountry("Pulp Fiction", "unknown");
+        });
         Main.main(args);
     }
 }
