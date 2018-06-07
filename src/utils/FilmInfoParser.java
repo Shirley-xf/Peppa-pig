@@ -4,6 +4,9 @@ import dao.DbConnection;
 import javafx.scene.control.Button;
 
 import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,6 +18,9 @@ public class FilmInfoParser {
     private static String sDataPath;
     private static File[] sTypes;
     private static List<Button> sButtonList = new LinkedList<>();
+
+    private static final FileSystem fs = FileSystems.getDefault();
+
 
     public FilmInfoParser() {}
 
@@ -38,15 +44,15 @@ public class FilmInfoParser {
         if (path_to_data.length() > 0) {
             sDataPath = path_to_data;
         } else {
-            sDataPath = DEFAULT_DATA_PATH;
+            sDataPath = Paths.get(".").toAbsolutePath().normalize().toString() + fs.getSeparator() + DEFAULT_DATA_PATH;
         }
-        readInfo(sDataPath + "/data.txt");
+        readInfo(sDataPath + fs.getSeparator() +"data.txt");
         String sql;
         String[] all_infos = sContent.split("\n");
-        File films_dir = new File(sDataPath + "/films");
+        File films_dir = new File(sDataPath + fs.getSeparator() +"films");
         sTypes = films_dir.listFiles(e -> e.getName().charAt(0) != '.');
-        File intro_dir = new File(sDataPath + "/introductions");
-        File img_dir = new File(sDataPath + "/pictures");
+        File intro_dir = new File(sDataPath + fs.getSeparator() +"introductions");
+        File img_dir = new File(sDataPath + fs.getSeparator() +"pictures");
         FileOutputStream fos;
         sql = "delete from film_actor; delete from film_director; delete from film;";
         try {
@@ -147,7 +153,8 @@ public class FilmInfoParser {
 
     }
     public void addToTypeButtonList(File type_) {
-        Button btn = new Button(type_.getName());
+        Button btn = new Button(type_.getName()); //TODO: need translated by properties.
+                                                  //TODO: need refactor.
         btn.setId(type_.getName().toLowerCase());
         sButtonList.add(btn);
     }

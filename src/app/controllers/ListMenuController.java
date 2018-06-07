@@ -53,6 +53,8 @@ public class ListMenuController {
             System.err.println("Image " + e);
         }
 
+        //TODO : change text
+        //TODO: fxml text element translated by properties' setting.
         // Text：
         StringBuilder sb = new StringBuilder("Introduction:\n");
         File intro_file = new File(f.getIntro_url()
