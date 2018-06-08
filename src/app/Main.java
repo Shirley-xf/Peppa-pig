@@ -24,6 +24,9 @@ import utils.PropertiesInfoParser;
 
 
 import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -42,10 +45,16 @@ public class Main extends Application {
     private static String sFilmPath = "";
     private static String sPropPath = "";
 
+    private static String lang;
+    private static final String basePath = Paths.get(".").toAbsolutePath().normalize().toString();
+    private static final FileSystem fs = FileSystems.getDefault();
+
+
     public static void setFilmPath(String sFilmPath) { Main.sFilmPath = sFilmPath; }
     public static void setPropertiesPath(String sPropPath) { Main.sPropPath = sPropPath; }
 
     public void start(Stage primaryStage) throws IOException {
+
         runCustomSettingsAtPrev();
         try {
             mLanguageLinkedList = PropertiesInfoParser.getPropertiesList(sPropPath);
@@ -58,18 +67,36 @@ public class Main extends Application {
         FXMLLoader type_menu_loader = new FXMLLoader(getClass().getResource("typeMenu.fxml"));
         FXMLLoader list_menu_loader = new FXMLLoader(getClass().getResource("listMenu.fxml"));
 
+        String propertyFile = basePath + fs.getSeparator()
+            + "data" + fs.getSeparator() + "properties" + fs.getSeparator() + "default_" +
+            lang + ".properties";
+
+        PropertyResourceBundle proper = null;
+
+        try {
+            BufferedReader conf = new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8"));
+            proper = new PropertyResourceBundle(conf);
+        } catch (IOException e) {
+            System.err.println("No properties file found.");
+            System.exit(1);
+        }
+
+        start_menu_loader.setResources(proper);
         start_menu_loader.load();
         sStartMenuController = start_menu_loader.getController();
         sPrimaryStage.setScene(sStartMenuController.getScene());
         sPrimaryStage.show();
 
+        start_menu_loader.setResources(proper);
         lang_menu_loader.load();
         sLanguageMenuController = lang_menu_loader.getController();
         ListView<Language> lan_lst_view = (ListView) sLanguageMenuController.getLanguagePane().getChildren().get(0);
         mLanguageLinkedList.forEach(lan_lst_view.getItems()::add);
 
+        type_menu_loader.setResources(proper);
         type_menu_loader.load();
         sTypeMenuController = type_menu_loader.getController();
+        list_menu_loader.setResources(proper);
         list_menu_loader.load();
         sListMenuController = list_menu_loader.getController();
         FilteredList anchor_panes = sListMenuController.getFilmListSplitPane().getItems().filtered(e -> e instanceof AnchorPane);
@@ -94,6 +121,7 @@ public class Main extends Application {
 
     }
     public static void main(String[] args) {
+        lang = "zh";
         launch(args);
     }
 
