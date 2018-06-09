@@ -114,7 +114,7 @@ public class Main extends Application {
         String propertyFile = basePath + fs.getSeparator()
             + "data" + fs.getSeparator() + "properties" + fs.getSeparator() + "default_" +
             lang + ".properties";
-        PropertyResourceBundle another = null;
+        Main.lang = lang;
         try {
             BufferedReader conf = new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8"));
             proper = new PropertyResourceBundle(conf);
@@ -124,7 +124,7 @@ public class Main extends Application {
         }
 
         if (sTypeMenuController != null) {
-            try {
+            /**try {
                 sLanguageMenuController.getScene()
                     .setRoot(FXMLLoader.load(Main.class.getResource("languageMenu.fxml"), proper));
                 sStartMenuController.getScene().setRoot(FXMLLoader.load(Main.class.getResource("startMenu.fxml"), proper));
@@ -133,7 +133,7 @@ public class Main extends Application {
                 sListMenuController.getScene().setRoot(FXMLLoader.load(Main.class.getResource("listMenu.fxml"), proper));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }***/
         } else {
             start_menu_loader.setResources(proper);
             type_menu_loader.setResources(proper);
@@ -148,7 +148,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        lang = "zh";
+        lang = "en";
         launch(args);
     }
 
