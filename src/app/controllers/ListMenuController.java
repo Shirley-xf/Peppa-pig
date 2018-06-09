@@ -3,8 +3,6 @@ package app.controllers;
 import app.datatype.Film;
 import app.Main;
 import dao.DbConnection;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -42,9 +39,9 @@ public class ListMenuController {
     public void showAllInfo(Film f) {
 
         Properties prop = new Properties();
-        String propertyFile = Main.basePath + Main.fs.getSeparator()
-            + "data" + Main.fs.getSeparator() + "properties" + Main.fs.getSeparator() + "default_" +
-            Main.lang + ".properties";
+        String propertyFile = Main.BASE_PATH + Main.FILE_SYSTEM.getSeparator()
+            + "data" + Main.FILE_SYSTEM.getSeparator() + "properties" + Main.FILE_SYSTEM.getSeparator() + "default_" +
+            Main.cur_language + ".properties";
         try {
             prop.load(new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8")));
         } catch (IOException e) {

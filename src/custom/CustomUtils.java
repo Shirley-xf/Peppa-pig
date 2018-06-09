@@ -6,29 +6,29 @@ import java.util.List;
 
 public class CustomUtils {
     private CustomUtils() {}
-    private static List<Customizable> sPrevCustomList = new LinkedList<>();
-    private static List<Customizable> sPostCustomList = new LinkedList<>();
-    public static void addCustomToPrev(Customizable c) {
-        sPrevCustomList.add(c);
+    private static List<Customizable> sInitCustomList = new LinkedList<>();
+    private static List<Customizable> sDurableCustomList = new LinkedList<>();
+    public static void addCustomToInit(Customizable c) {
+        sInitCustomList.add(c);
     }
 
-    public static void addCustomToPost(Customizable c) {
-        sPostCustomList.add(c);
+    public static void addCustom(Customizable c) {
+        sDurableCustomList.add(c);
     }
 
     public static void delCustomInPrev(Customizable c) {
-        sPrevCustomList.remove(c);
+        sInitCustomList.remove(c);
     }
 
     public static void delCustomInPost(Customizable c) {
-        sPostCustomList.remove(c);
+        sDurableCustomList.remove(c);
     }
 
     public static List getPrevCustomList() {
-        return sPrevCustomList;
+        return sInitCustomList;
     }
 
     public static List getPostCustomList() {
-        return sPostCustomList;
+        return sDurableCustomList;
     }
 }

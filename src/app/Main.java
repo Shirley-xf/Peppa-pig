@@ -45,23 +45,27 @@ public class Main extends Application {
     private static String sFilmPath = "";
     private static String sPropPath = "";
 
-    public static String lang;
-    public static final String basePath = Paths.get(".").toAbsolutePath().normalize().toString();
-    public static final FileSystem fs = FileSystems.getDefault();
-    public static PropertyResourceBundle proper = null;
-
-    static FXMLLoader start_menu_loader = new FXMLLoader(Main.class.getResource("startMenu.fxml"));
-    static FXMLLoader lang_menu_loader = new FXMLLoader(Main.class.getResource("languageMenu.fxml"));
-    static FXMLLoader type_menu_loader = new FXMLLoader(Main.class.getResource("typeMenu.fxml"));
-    static FXMLLoader list_menu_loader = new FXMLLoader(Main.class.getResource("listMenu.fxml"));
+    public static String cur_language;
+    public static final String BASE_PATH = Paths.get(".").toAbsolutePath().normalize().toString();
+    public static final FileSystem FILE_SYSTEM = FileSystems.getDefault();
+    public static PropertyResourceBundle property = null;
+    public static Map<String, FXMLLoader> FXMLLoaders;
+    public static String[] FXMLs = {"startMenu.fxml", "languageMenu.fxml",
+            "typeMenu.fxml", "listMenu.fxml"};
 
 
+    private static boolean runned_custom_init = false;
     public static void setFilmPath(String sFilmPath) { Main.sFilmPath = sFilmPath; }
     public static void setPropertiesPath(String sPropPath) { Main.sPropPath = sPropPath; }
 
     public void start(Stage primaryStage) throws IOException {
 
-        runCustomSettingsAtPrev();
+        FXMLLoaders = new HashMap<>(4);
+        if (!runned_custom_init) runCustomSettingsAtPrev();
+        for (int i = 0; i < FXMLs.length; i++) {
+            FXMLLoaders.put(FXMLs[i], new FXMLLoader(Main.class.getResource(FXMLs[i])));
+        }
+
         try {
             mLanguageLinkedList = PropertiesInfoParser.getPropertiesList(sPropPath);
         } catch (Exception e) {
@@ -69,31 +73,41 @@ public class Main extends Application {
         }
         sPrimaryStage = primaryStage;
 
-        setLocale(lang);
+//        setLocale(cur_language);
+        String propertyFile = BASE_PATH + FILE_SYSTEM.getSeparator()
+                + "data" + FILE_SYSTEM.getSeparator() + "properties" + FILE_SYSTEM.getSeparator() + "default_" +
+                cur_language + ".properties";
+        try {
+            BufferedReader conf = new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8"));
+            property = new PropertyResourceBundle(conf);
+        } catch (IOException e) {
+            System.err.println("No properties file found.");
+            System.exit(1);
+        }
 
-        start_menu_loader.load();
-        sStartMenuController = start_menu_loader.getController();
+
+        for (Map.Entry<String, FXMLLoader> et : FXMLLoaders.entrySet()) {
+            et.getValue().setResources(property);
+            et.getValue().load();
+        }
+
+        sStartMenuController = FXMLLoaders.get("startMenu.fxml").getController();
         sPrimaryStage.setScene(sStartMenuController.getScene());
         sPrimaryStage.show();
 
-
-        lang_menu_loader.load();
-        sLanguageMenuController = lang_menu_loader.getController();
+        sLanguageMenuController = FXMLLoaders.get("languageMenu.fxml").getController();
         ListView<Language> lan_lst_view = (ListView) sLanguageMenuController.getLanguagePane().getChildren().get(0);
         mLanguageLinkedList.forEach(lan_lst_view.getItems()::add);
 
+        sTypeMenuController = FXMLLoaders.get("typeMenu.fxml").getController();
 
-        type_menu_loader.load();
-        sTypeMenuController = type_menu_loader.getController();
-
-        list_menu_loader.load();
-        sListMenuController = list_menu_loader.getController();
-        FilteredList anchor_panes = sListMenuController.getFilmListSplitPane().getItems().filtered(e -> e instanceof AnchorPane);
+        sListMenuController = FXMLLoaders.get("listMenu.fxml").getController();
+        FilteredList list_menu_anc_panes = sListMenuController.getFilmListSplitPane().getItems().filtered(e -> e instanceof AnchorPane);
 
         // Need to be refactored
-        AnchorPane left = (AnchorPane) anchor_panes.get(0);
+        AnchorPane left = (AnchorPane) list_menu_anc_panes.get(0);
         ListView<Film> filmListView = (ListView) left.getChildren().get(0);
-        AnchorPane right = (AnchorPane) anchor_panes.get(1);
+        AnchorPane right = (AnchorPane) list_menu_anc_panes.get(1);
 
         ObservableList chrd = right.getChildren();
         FilteredList op_btns = chrd.filtered(e -> e instanceof Button);
@@ -106,49 +120,17 @@ public class Main extends Application {
                                     .getSelectedItem()));
         }
 
+
+
+
         runCustomSettingsAtPost();
-
-    }
-
-    public static void setLocale(String lang) {
-        String propertyFile = basePath + fs.getSeparator()
-            + "data" + fs.getSeparator() + "properties" + fs.getSeparator() + "default_" +
-            lang + ".properties";
-        Main.lang = lang;
-        try {
-            BufferedReader conf = new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8"));
-            proper = new PropertyResourceBundle(conf);
-        } catch (IOException e) {
-            System.err.println("No properties file found.");
-            System.exit(1);
-        }
-
-        if (sTypeMenuController != null) {
-            /**try {
-                sLanguageMenuController.getScene()
-                    .setRoot(FXMLLoader.load(Main.class.getResource("languageMenu.fxml"), proper));
-                sStartMenuController.getScene().setRoot(FXMLLoader.load(Main.class.getResource("startMenu.fxml"), proper));
-                sTypeMenuController.getScene().
-                    setRoot(FXMLLoader.load(Main.class.getResource("typeMenu.fxml"), proper));
-                sListMenuController.getScene().setRoot(FXMLLoader.load(Main.class.getResource("listMenu.fxml"), proper));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }***/
-        } else {
-            start_menu_loader.setResources(proper);
-            type_menu_loader.setResources(proper);
-            lang_menu_loader.setResources(proper);
-            list_menu_loader.setResources(proper);
-        }
-
-
-
+        runned_custom_init = true;
 
 
     }
 
     public static void main(String[] args) {
-        lang = "en";
+        cur_language = "en";
         launch(args);
     }
 

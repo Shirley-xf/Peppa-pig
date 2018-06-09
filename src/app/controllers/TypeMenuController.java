@@ -72,12 +72,15 @@ public class TypeMenuController {
     public void setUpButtons() {
         List<Button> btn_list = FilmInfoParser.getButtonList();
         GridPane this_pane = Main.getsTypeMenuController().getTypeMenuPane();
+        ObservableList chrd = this_pane.getChildren();
+        FilteredList<Button> chrd_btn_list = chrd.filtered(e -> (e instanceof Button) && !((Button) e).getId().equals("go_back_btn"));
+        chrd.removeAll(chrd_btn_list);
         for (Button btn : btn_list) {
-            ObservableList chrd = this_pane.getChildren();
-            FilteredList<Button> chrd_btn_list = chrd.filtered(e -> e instanceof Button);
+            chrd = this_pane.getChildren();
+            chrd_btn_list = chrd.filtered(e -> e instanceof Button);
             int row, col;
             if (chrd_btn_list.size() > 1) {
-                Button last = chrd_btn_list.get(btn_list.size() - 1);
+                Button last = chrd_btn_list.get(chrd_btn_list.size() - 1);
                 row = GridPane.getRowIndex(last);
                 col = GridPane.getColumnIndex(last);
             } else {

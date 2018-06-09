@@ -44,8 +44,13 @@ public class LanguageMenuController {
     }
 
     public void setLanguage(Language lan) {
-        Main.setLocale(lan.toString().split("_")[1]);
-
+        Main.cur_language = lan.toString().split("_")[1];
+        try {
+            Main.getPrimaryStage().close();
+            new Main().start(Main.getPrimaryStage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("set language " + lan);
     }
 }

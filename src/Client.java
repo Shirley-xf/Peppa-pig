@@ -6,10 +6,10 @@ public class Client {
 
     public static void main(String[] args) {
 
-        CustomUtils.addCustomToPrev(() -> {
+        CustomUtils.addCustomToInit(() -> {
             new FilmInfoParser().parse("");
         });
-        CustomUtils.addCustomToPost(() -> {
+        CustomUtils.addCustom(() -> {
             FilmInfoParser.setYear("Pulp Fiction", 2010);
             FilmInfoParser.setCountry("Pulp Fiction", "unknown");
         });

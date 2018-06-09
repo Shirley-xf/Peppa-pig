@@ -120,8 +120,8 @@ public class FilmInfoScrap implements Runnable {
    * *
    */
   public int writeImg() {
-    /*String basePath = Paths.get(".").toAbsolutePath().normalize().toString();
-    FileSystem fs = FileSystems.getDefault();*/
+    /*String BASE_PATH = Paths.get(".").toAbsolutePath().normalize().toString();
+    FileSystem FILE_SYSTEM = FileSystems.getDefault();*/
     try {
       URL img = new URL(getImgLink());
       ReadableByteChannel rbc = Channels.newChannel(img.openStream());
@@ -146,8 +146,8 @@ public class FilmInfoScrap implements Runnable {
       try {
         fw = new FileWriter(datafile, true);
         BufferedWriter bw = new BufferedWriter(fw);
-        //bw.write(scrapInfo() + "|" + fs.getSeparator() +
-        //      "data" + fs.getSeparator() + "pictures" + fs.getSeparator() + filmName + ".jpg"  + "\n");
+        //bw.write(scrapInfo() + "|" + FILE_SYSTEM.getSeparator() +
+        //      "data" + FILE_SYSTEM.getSeparator() + "pictures" + FILE_SYSTEM.getSeparator() + filmName + ".jpg"  + "\n");
         bw.write(scrapInfo() + "\n");
         bw.close();
         return 0;
