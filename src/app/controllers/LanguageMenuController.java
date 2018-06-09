@@ -5,11 +5,15 @@ import app.datatype.Language;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class LanguageMenuController {
     public AnchorPane getLanguagePane() {
@@ -40,6 +44,8 @@ public class LanguageMenuController {
     }
 
     public void setLanguage(Language lan) {
+        Main.setLocale(lan.toString().split("_")[1]);
+
         System.out.println("set language " + lan);
     }
 }

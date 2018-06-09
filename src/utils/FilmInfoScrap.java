@@ -172,9 +172,9 @@ public class FilmInfoScrap implements Runnable {
 
   public static void main(String[] args) {
     try {
-      FilmInfoScrap pulpFiction = new FilmInfoScrap("Pulp Fiction");
-      FilmInfoScrap sevenSamurai = new FilmInfoScrap("Seven Samurai");
-      FilmInfoScrap thirdMan = new FilmInfoScrap("The Third Man");
+      FilmInfoScrap pulpFiction = new FilmInfoScrap("Band of Outsiders");
+      FilmInfoScrap sevenSamurai = new FilmInfoScrap("The 400 Blows");
+      FilmInfoScrap thirdMan = new FilmInfoScrap("Yi Yi");
       //System.out.println(pulpFiction.scrapInfo());
       //pulpFiction.writeInfo();
       //pulpFiction.writeImg();

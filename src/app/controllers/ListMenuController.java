@@ -18,12 +18,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
 public class ListMenuController {
     private Scene scene;
@@ -42,9 +41,18 @@ public class ListMenuController {
 
     public void showAllInfo(Film f) {
 
+        Properties prop = new Properties();
+        String propertyFile = Main.basePath + Main.fs.getSeparator()
+            + "data" + Main.fs.getSeparator() + "properties" + Main.fs.getSeparator() + "default_" +
+            Main.lang + ".properties";
+        try {
+            prop.load(new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8")));
+        } catch (IOException e) {
+            System.err.println("Please refer the properties file in Main class");
+            System.exit(1);
+        }
 
-
-        // Poster
+         // Poster
         try {
             Image img = new Image(f.getImg_url());
             poster.setImage(img);
@@ -56,7 +64,7 @@ public class ListMenuController {
         //TODO : change text
         //TODO: fxml text element translated by properties' setting.
         // Text：
-        StringBuilder sb = new StringBuilder("Introduction:\n");
+        StringBuilder sb = new StringBuilder(prop.getProperty("Introduction") + ":\n");
         File intro_file = new File(f.getIntro_url()
                 .replace("file:", "")
                 .replace("%20", " "));
@@ -85,21 +93,21 @@ public class ListMenuController {
         intro.setText(sb.toString());
 
 
-        sb = new StringBuilder("Actors:\n");
+        sb = new StringBuilder(prop.getProperty("Actors") + ":\n");
         List<String> actors = f.getActors();
         List<String> directors = f.getDirectors();
         for (String s : actors) sb.append(s + "\n");
-        sb.append("Directors:\n");
+        sb.append(prop.getProperty("Directors") + ":\n");
         for (String s : directors) sb.append(s + "\n");
-        sb.append("Duration: ");
+        sb.append(prop.getProperty("Duration") + ": ");
         sb.append(f.getDuration() + "\n");
 //        sb.append("Year: ");
 //        sb.append((f.getYear() == 0) ? "" : f.getYear());
         if (f.getYear() != 0) {
-            sb.append("Year: " + f.getYear() + "\n");
+            sb.append(prop.getProperty("Year") + ": " + f.getYear() + "\n");
         }
         if (f.getCountry() != null) {
-            sb.append("Country: " + f.getCountry() + "\n");
+            sb.append(prop.getProperty("Country") + ": " + f.getCountry() + "\n");
         }
         basicInfo.setText(sb.toString());
 
