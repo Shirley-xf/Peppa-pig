@@ -61,7 +61,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
 
         FXMLLoaders = new HashMap<>(4);
-        if (!runned_custom_init) runCustomSettingsAtPrev();
+        if (!runned_custom_init) {
+            runCustomSettingsToInit();
+            runned_custom_init = true;
+        }
         for (int i = 0; i < FXMLs.length; i++) {
             FXMLLoaders.put(FXMLs[i], new FXMLLoader(Main.class.getResource(FXMLs[i])));
         }
@@ -123,7 +126,7 @@ public class Main extends Application {
 
 
 
-        runCustomSettingsAtPost();
+        runCustomSettings();
         runned_custom_init = true;
 
 
@@ -134,7 +137,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    public void runCustomSettingsAtPrev() {
+    public void runCustomSettingsToInit() {
         List<Customizable> custom_list = CustomUtils.getPrevCustomList();
         Iterator<Customizable> iter = custom_list.iterator();
         while (iter.hasNext()) {
@@ -142,7 +145,7 @@ public class Main extends Application {
         }
     }
 
-    public void runCustomSettingsAtPost() {
+    public void runCustomSettings() {
         List<Customizable> custom_list = CustomUtils.getPostCustomList();
         Iterator<Customizable> iter = custom_list.iterator();
         while (iter.hasNext()) {

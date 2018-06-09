@@ -1,7 +1,6 @@
 package utils;
 
 import dao.DbConnection;
-import javafx.scene.control.Button;
 
 import java.io.*;
 import java.nio.file.FileSystem;
@@ -17,7 +16,7 @@ public class FilmInfoParser {
     private static String sContent;
     private static String sDataPath;
     private static File[] sTypes;
-    private static List<Button> sButtonList = new LinkedList<>();
+    private static List<String> sDirNameList = new LinkedList<>();
 
     private static final FileSystem fs = FileSystems.getDefault();
 
@@ -136,7 +135,7 @@ public class FilmInfoParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            addToTypeButtonList(type_);
+            addToDirNameList(type_);
         }
 
         File[] imgs = img_dir.listFiles(e -> e.getName().charAt(0) != '.');
@@ -152,16 +151,14 @@ public class FilmInfoParser {
         }
 
     }
-    public void addToTypeButtonList(File type_) {
-        Button btn = new Button(type_.getName()); //TODO: need translated by properties.
-                                                  //TODO: need refactor.
-        btn.setId(type_.getName().toLowerCase());
-        sButtonList.add(btn);
+    public void addToDirNameList(File type) {
+
+        sDirNameList.add(type.getName());
     }
 
-    public static List<Button> getButtonList() {
+    public static List<String> getDirNameList() {
 
-        return sButtonList;
+        return sDirNameList;
     }
 
     public static void setYear(String name, int year) {
