@@ -19,6 +19,9 @@ import java.io.*;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * List menu controller controls the listMenu.fxml
+ */
 public class ListMenuController {
     private Scene scene;
     @FXML
@@ -36,11 +39,19 @@ public class ListMenuController {
     @FXML
     private Label basicInfo;
 
+    /**
+     * Go back to type menu
+     */
     public void goBack() {
         Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
         Main.getPrimaryStage().show();
     }
 
+    /**
+     * Show all information of the film. Including trailers, posters, introductions and basic information.
+     *
+     * @param f the film for displaying information
+     */
     public void showAllInfo(Film f) {
 
         PropertyResourceBundle prop = Main.property;
@@ -120,6 +131,16 @@ public class ListMenuController {
     }
 
 
+    /**
+     * Sets up film by their type.
+     * <p>
+     * This method can fetch the films under the film path. and add films to the a list
+     * Then, it will be fetched by a type manager (TypeMenuController). And the type manager
+     * can get all the film under its specified type.
+     * </p>
+     * @param type the type
+     * @return the films list
+     */
     public LinkedList<Film> setUpFilmByType(String type) {
         try {
             LinkedList<Film> film_list = new LinkedList<>();
@@ -174,11 +195,21 @@ public class ListMenuController {
         }
     }
 
+    /**
+     * Gets the whole pane (split pane).
+     *
+     * @return the split pane
+     */
     public SplitPane getFilmListSplitPane() {
         return filmListSplitPane;
     }
 
 
+    /**
+     * Gets scene.
+     *
+     * @return the scene
+     */
     public Scene getScene() {
         if (scene == null) {
             scene = new Scene(this.filmListSplitPane);

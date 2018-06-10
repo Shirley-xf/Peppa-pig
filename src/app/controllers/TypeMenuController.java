@@ -19,12 +19,25 @@ import utils.FilmInfoParser;
 import java.util.List;
 
 
+/**
+ * This controller controls the type menu (typeMenu.fxml).
+ */
 public class TypeMenuController {
 
+    /**
+     * Gets the pane here, which is a grid pane.
+     *
+     * @return the type menu pane
+     */
     public GridPane getTypeMenuPane() {
         return typeMenuPane;
     }
 
+    /**
+     * Gets scene.
+     *
+     * @return the scene
+     */
     public Scene getScene() {
         if (scene == null) {
             scene = new Scene(this.typeMenuPane);
@@ -36,11 +49,14 @@ public class TypeMenuController {
     @FXML private GridPane typeMenuPane;
 
 
-    public void getFilmByType(String text) {
-        System.out.println("getFilmByType " +text);
-        goToListMenuAndShow(text);
-    }
 
+    /**
+     * Go to list menu and show up the films of the type in the list.
+     * <p>
+     *      This method let the scene switch to list menu controller and show up films by the type specified.
+     * </p>
+     * @param type the String of type
+     */
     public void goToListMenuAndShow(String type) {
         Stage ps = Main.getPrimaryStage();
         SplitPane sp_pane = Main.getsListMenuController().getFilmListSplitPane();
@@ -65,10 +81,16 @@ public class TypeMenuController {
 
     }
 
+    /**
+     * Go back.
+     */
     public void goBack() {
         Main.getPrimaryStage().setScene(Main.getsStartMenuController().getScene());
     }
 
+    /**
+     * Sets up buttons.
+     */
     public void setUpButtons() {
         List<String> str_list = FilmInfoParser.getDirNameList();
         GridPane this_pane = Main.getsTypeMenuController().getTypeMenuPane();
@@ -102,7 +124,7 @@ public class TypeMenuController {
                     GridPane.setColumnIndex(btn, col + 1);
                 }
                 GridPane.setHalignment(btn, HPos.CENTER);
-                btn.setOnAction(e -> getFilmByType(btn.getId()));
+                btn.setOnAction(e -> goToListMenuAndShow(btn.getId()));
                 this_pane.getChildren().add(btn);
                 }
             }

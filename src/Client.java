@@ -8,7 +8,7 @@ public class Client {
 
     public static void main(String[] args) {
 
-        CustomUtils.setPropertiesInfo(() -> {
+        CustomUtils.addCustomAtPrev(() -> {
             switch (Main.cur_language) {
                 case "fr":
                     Main.setIntroPath(Main.BASE_PATH
@@ -33,7 +33,7 @@ public class Client {
             Main.setFilmPath("");
             Main.setPropertiesPath("");
         });
-        CustomUtils.addCustom(() -> {
+        CustomUtils.addCustomAtPost(() -> {
             FilmInfoParser.setYear("Pulp Fiction", 2010);
             FilmInfoParser.setCountry("Pulp Fiction", "unknown");
         });

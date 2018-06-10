@@ -10,11 +10,28 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
 
+/**
+ * The type Language menu controller. It controls languageMenu.fxml
+ * <p>
+ *     This Controller offers methods for changing languages.
+ * </p>
+ *
+ */
 public class LanguageMenuController {
+    /**
+     * Gets language pane, which contains an anchor pane and with its child a single list view.
+     *
+     * @return the language pane
+     */
     public AnchorPane getLanguagePane() {
         return languagePane;
     }
 
+    /**
+     * Gets scene.
+     *
+     * @return the scene
+     */
     public Scene getScene() {
         if (scene == null) {
             scene = new Scene(this.languagePane);
@@ -26,6 +43,15 @@ public class LanguageMenuController {
     @FXML
     private AnchorPane languagePane;
 
+    /**
+     * Change language.
+     * <p>
+     *     According to the selected item, the language is thus specified.
+     * </p>
+     *
+     *
+     * @param e the event, which can specify which element is selected and activated.
+     */
     public void changeLanguage(Event e) {
         if (e.getEventType().getName().equals("KEY_PRESSED")) {
             KeyEvent key_event = (KeyEvent) e;
@@ -39,7 +65,12 @@ public class LanguageMenuController {
         Main.getPrimaryStage().setScene(Main.getsStartMenuController().getScene());
     }
 
-    public void setLanguage(Language lan) {
+    /**
+     * Sets language.
+     *
+     * @param lan the language that is going to be set.
+     */
+    private void setLanguage(Language lan) {
         Main.cur_language = lan.toString().split("_")[1];
         try {
             Main.getPrimaryStage().close();

@@ -21,7 +21,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.*;
 import javafx.util.Duration;
-import utils.FilmInfoParser;
 import utils.PropertiesInfoParser;
 
 
@@ -156,7 +155,7 @@ public class Main extends Application {
     }
 
     private void getPropertiesInfo() {
-        Customizable prop_custom = CustomUtils.getPropertiesCustom();
+        Customizable prop_custom = CustomUtils.getCustomAtPrev();
         prop_custom.customSetup();
         String intro_path = (sIntroPath.length() < 1) ? DEFAULT_INTRO_PATH : sIntroPath;
         if (runned_custom_init) {
