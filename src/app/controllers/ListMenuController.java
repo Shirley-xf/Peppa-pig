@@ -17,19 +17,24 @@ import javafx.util.Duration;
 
 import java.io.*;
 import java.sql.ResultSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class ListMenuController {
     private Scene scene;
-    @FXML private SplitPane filmListSplitPane;
-    @FXML private ImageView poster;
-    @FXML private Button back;
-    @FXML private Button play;
-    @FXML private MediaView trailer;
-    @FXML private Label intro;
-    @FXML private Label basicInfo;
+    @FXML
+    private SplitPane filmListSplitPane;
+    @FXML
+    private ImageView poster;
+    @FXML
+    private Button back;
+    @FXML
+    private Button play;
+    @FXML
+    private MediaView trailer;
+    @FXML
+    private Label intro;
+    @FXML
+    private Label basicInfo;
 
     public void goBack() {
         Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
@@ -38,18 +43,9 @@ public class ListMenuController {
 
     public void showAllInfo(Film f) {
 
-        Properties prop = new Properties();
-        String propertyFile = Main.BASE_PATH + Main.FILE_SYSTEM.getSeparator()
-            + "data" + Main.FILE_SYSTEM.getSeparator() + "properties" + Main.FILE_SYSTEM.getSeparator() + "default_" +
-            Main.cur_language + ".properties";
-        try {
-            prop.load(new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8")));
-        } catch (IOException e) {
-            System.err.println("Please refer the properties file in Main class");
-            System.exit(1);
-        }
+        PropertyResourceBundle prop = Main.property;
 
-         // Poster
+        // Poster
         try {
             Image img = new Image(f.getImg_url());
             poster.setImage(img);
@@ -58,10 +54,9 @@ public class ListMenuController {
             System.err.println("Image " + e);
         }
 
-        //TODO : change text
-        //TODO: fxml text element translated by properties' setting.
+
         // Text：
-        StringBuilder sb = new StringBuilder(prop.getProperty("Introduction") + ":\n");
+        StringBuilder sb = new StringBuilder(prop.getString("Introduction") + ":\n");
         File intro_file = new File(f.getIntro_url()
                 .replace("file:", "")
                 .replace("%20", " "));
@@ -90,21 +85,26 @@ public class ListMenuController {
         intro.setText(sb.toString());
 
 
-        sb = new StringBuilder(prop.getProperty("Actors") + ":\n");
+        sb = new StringBuilder(prop.getString("Actors") + ":\n");
         List<String> actors = f.getActors();
         List<String> directors = f.getDirectors();
-        for (String s : actors) sb.append(s + "\n");
-        sb.append(prop.getProperty("Directors") + ":\n");
-        for (String s : directors) sb.append(s + "\n");
-        sb.append(prop.getProperty("Duration") + ": ");
+        for (String s : actors) {
+            String atr = getPropString(s);
+            sb.append(atr + "\n");
+        }
+        sb.append(prop.getString("Directors") + ":\n");
+        for (String s : directors) {
+            String dtr = getPropString(s);
+            sb.append(dtr + "\n");
+        }
+
+        sb.append(prop.getString("Duration") + ": ");
         sb.append(f.getDuration() + "\n");
-//        sb.append("Year: ");
-//        sb.append((f.getYear() == 0) ? "" : f.getYear());
         if (f.getYear() != 0) {
-            sb.append(prop.getProperty("Year") + ": " + f.getYear() + "\n");
+            sb.append(prop.getString("Year") + ": " + f.getYear() + "\n");
         }
         if (f.getCountry() != null) {
-            sb.append(prop.getProperty("Country") + ": " + f.getCountry() + "\n");
+            sb.append(prop.getString("Country") + ": " + f.getCountry() + "\n");
         }
         basicInfo.setText(sb.toString());
 
@@ -173,6 +173,7 @@ public class ListMenuController {
             e.printStackTrace();
         }
     }
+
     public SplitPane getFilmListSplitPane() {
         return filmListSplitPane;
     }
@@ -185,4 +186,13 @@ public class ListMenuController {
         return scene;
     }
 
+    private static String getPropString(String s) {
+        String str;
+        try {
+            str = Main.property.getString(s);
+        } catch (MissingResourceException e) {
+            str = s;
+        }
+        return str;
+    }
 }

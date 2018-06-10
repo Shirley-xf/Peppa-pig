@@ -1,8 +1,10 @@
 package app.datatype;
 
+import app.Main;
 import javafx.scene.Node;
 
 import java.util.List;
+import java.util.MissingResourceException;
 
 public class Film {
     private int id;
@@ -105,6 +107,12 @@ public class Film {
 
     @Override
     public String toString() {
-        return name;
+        String s;
+        try {
+            s = Main.property.getString(name);
+        } catch (MissingResourceException e) {
+            s = name;
+        }
+        return s;
     }
 }

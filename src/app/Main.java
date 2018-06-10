@@ -7,6 +7,7 @@ import app.controllers.TypeMenuController;
 import app.datatype.Film;
 import app.datatype.Language;
 import custom.*;
+import dao.DbConnection;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -20,6 +21,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.*;
 import javafx.util.Duration;
+import utils.FilmInfoParser;
 import utils.PropertiesInfoParser;
 
 
@@ -39,15 +41,20 @@ public class Main extends Application {
     private static StartMenuController sStartMenuController = null;
     private static LanguageMenuController sLanguageMenuController = null;
 
-    private List<Film> mFilmLinkedList;
+
     private List<Language> mLanguageLinkedList;
 
     private static String sFilmPath = "";
+    private static String prefix = "default_";
+
+
     private static String sPropPath = "";
+    private static String sIntroPath = "";
 
     public static String cur_language;
     public static final String BASE_PATH = Paths.get(".").toAbsolutePath().normalize().toString();
-    public static final FileSystem FILE_SYSTEM = FileSystems.getDefault();
+    public static final FileSystem FS = FileSystems.getDefault();
+    public static final String DEFAULT_INTRO_PATH = "data" + FS.getSeparator() + "introductions";
     public static PropertyResourceBundle property = null;
     public static Map<String, FXMLLoader> FXMLLoaders;
     public static String[] FXMLs = {"startMenu.fxml", "languageMenu.fxml",
@@ -55,11 +62,17 @@ public class Main extends Application {
 
 
     private static boolean runned_custom_init = false;
-    public static void setFilmPath(String sFilmPath) { Main.sFilmPath = sFilmPath; }
-    public static void setPropertiesPath(String sPropPath) { Main.sPropPath = sPropPath; }
+
+    public static void setFilmPath(String sFilmPath) {
+        Main.sFilmPath = sFilmPath;
+    }
+
+    public static void setPropertiesPath(String sPropPath) {
+        Main.sPropPath = sPropPath;
+    }
 
     public void start(Stage primaryStage) throws IOException {
-
+        getPropertiesInfo();
         FXMLLoaders = new HashMap<>(4);
         if (!runned_custom_init) {
             runCustomSettingsToInit();
@@ -76,17 +89,8 @@ public class Main extends Application {
         }
         sPrimaryStage = primaryStage;
 
-//        setLocale(cur_language);
-        String propertyFile = BASE_PATH + FILE_SYSTEM.getSeparator()
-                + "data" + FILE_SYSTEM.getSeparator() + "properties" + FILE_SYSTEM.getSeparator() + "default_" +
-                cur_language + ".properties";
-        try {
-            BufferedReader conf = new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile),"UTF-8"));
-            property = new PropertyResourceBundle(conf);
-        } catch (IOException e) {
-            System.err.println("No properties file found.");
-            System.exit(1);
-        }
+
+        property = PropertiesInfoParser.getProperty(prefix + cur_language, sPropPath);
 
 
         for (Map.Entry<String, FXMLLoader> et : FXMLLoaders.entrySet()) {
@@ -105,31 +109,29 @@ public class Main extends Application {
         sTypeMenuController = FXMLLoaders.get("typeMenu.fxml").getController();
 
         sListMenuController = FXMLLoaders.get("listMenu.fxml").getController();
-        FilteredList list_menu_anc_panes = sListMenuController.getFilmListSplitPane().getItems().filtered(e -> e instanceof AnchorPane);
 
-        // Need to be refactored
+        FilteredList list_menu_anc_panes = sListMenuController.getFilmListSplitPane()
+                .getItems()
+                .filtered(e -> e instanceof AnchorPane);
+
+
         AnchorPane left = (AnchorPane) list_menu_anc_panes.get(0);
         ListView<Film> filmListView = (ListView) left.getChildren().get(0);
         AnchorPane right = (AnchorPane) list_menu_anc_panes.get(1);
 
         ObservableList chrd = right.getChildren();
-        FilteredList op_btns = chrd.filtered(e -> e instanceof Button);
+        FilteredList<Button> op_btns = chrd.filtered(e -> e instanceof Button);
 
         sTypeMenuController.setUpButtons();
-        for (Button btn : (FilteredList<Button>) op_btns) {
+        for (Button btn : op_btns) {
             if (btn.getId().equals("play")) btn.setOnAction(
                     e -> goToMediaPlayer(filmListView
-                                    .getSelectionModel()
-                                    .getSelectedItem()));
+                            .getSelectionModel()
+                            .getSelectedItem()));
         }
 
 
-
-
         runCustomSettings();
-        runned_custom_init = true;
-
-
     }
 
     public static void main(String[] args) {
@@ -137,29 +139,48 @@ public class Main extends Application {
         launch(args);
     }
 
-    public void runCustomSettingsToInit() {
-        List<Customizable> custom_list = CustomUtils.getPrevCustomList();
+    private void runCustomSettingsToInit() {
+        List<Customizable> custom_list = CustomUtils.getInitCustomList();
         Iterator<Customizable> iter = custom_list.iterator();
         while (iter.hasNext()) {
             iter.next().customSetup();
         }
     }
 
-    public void runCustomSettings() {
-        List<Customizable> custom_list = CustomUtils.getPostCustomList();
+    private void runCustomSettings() {
+        List<Customizable> custom_list = CustomUtils.getDurableCustomList();
         Iterator<Customizable> iter = custom_list.iterator();
         while (iter.hasNext()) {
             iter.next().customSetup();
         }
     }
 
+    private void getPropertiesInfo() {
+        Customizable prop_custom = CustomUtils.getPropertiesCustom();
+        prop_custom.customSetup();
+        String intro_path = (sIntroPath.length() < 1) ? DEFAULT_INTRO_PATH : sIntroPath;
+        if (runned_custom_init) {
+            try {
+                for (File f : new File(intro_path).listFiles(f -> f.getName().contains(".txt"))) {
+                    String sql = "update film set intro_url = \"" + intro_path + FS.getSeparator() + f.getName()
+                            + "\" where name = \"" + f.getName().replace(".txt", "") + "\";";
+                            DbConnection.exeUpdate(sql);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public void goToMediaPlayer(Film f) {
+
+    private void goToMediaPlayer(Film f) {
         Media media = new Media(f.getMedia_url());
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         MediaView mediaView = new MediaView(mediaPlayer);
         Button playButton = new Button(">");
-        Button backButton = new Button("back");
+        playButton.setStyle("-fx-text-fill: #2280e8; -fx-background-color: #eeffcc");
+        Button backButton = new Button(property.getString("Back"));
+        backButton.setStyle("-fx-text-fill: #2280e8; -fx-background-color: #eeffcc");
         playButton.setOnAction(e -> {
             if (playButton.getText().equals(">")) {
                 mediaPlayer.play();
@@ -176,6 +197,9 @@ public class Main extends Application {
 
         Button rewindButton = new Button("<<");
         Button forwardButton = new Button(">>");
+
+        rewindButton.setStyle("-fx-text-fill: #2280e8; -fx-background-color: #eeffcc");
+        forwardButton.setStyle("-fx-text-fill: #2280e8; -fx-background-color: #eeffcc");
         rewindButton.setOnAction(e -> mediaPlayer.seek(mediaPlayer
                 .getCurrentTime()
                 .subtract(Duration.minutes(1)))
@@ -189,26 +213,25 @@ public class Main extends Application {
         slVolume.setMaxWidth(Region.USE_PREF_SIZE);
         slVolume.setMinWidth(30);
         slVolume.setValue(50);
+        slVolume.setStyle("-fx-background-color: #bbccee; -fx-text-fill: #002255");
         mediaPlayer.volumeProperty().bind(slVolume.valueProperty().divide(100));
         HBox volume_box = new HBox();
         HBox button_box = new HBox(10);
         button_box.setAlignment(Pos.CENTER);
         button_box.getChildren().addAll(playButton, rewindButton, forwardButton, backButton);
-        volume_box.getChildren().addAll(new Label("Volume"), slVolume);
+        volume_box.getChildren().addAll(new Label(property.getString("Volume")), slVolume);
         BorderPane pane = new BorderPane();
         pane.setCenter(mediaView);
         pane.setBottom(button_box);
         pane.setTop(volume_box);
+        pane.setStyle("-fx-background-color: #ccffee");
+
         Scene scene = new Scene(pane, 600, 400);
         sPrimaryStage.setTitle(f.getMedia_url().substring(f.getMedia_url().lastIndexOf("/") + 1
                 , f.getMedia_url().length()).replace("%20", " "));
         sPrimaryStage.setScene(scene);
         sPrimaryStage.show();
     }
-
-
-
-
 
     public static Stage getPrimaryStage() {
         return sPrimaryStage;
@@ -223,14 +246,26 @@ public class Main extends Application {
     }
 
 
-
     public static TypeMenuController getsTypeMenuController() {
         return sTypeMenuController;
     }
 
 
-
     public static LanguageMenuController getsLanguageMenuController() {
         return sLanguageMenuController;
+    }
+
+
+    public static String getIntroPath() {
+        return sIntroPath;
+    }
+
+    public static void setIntroPath(String sIntroPath) {
+        Main.sIntroPath = sIntroPath;
+    }
+
+
+    public static String getPropPath() {
+        return sPropPath;
     }
 }

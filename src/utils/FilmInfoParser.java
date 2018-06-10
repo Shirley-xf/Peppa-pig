@@ -39,18 +39,20 @@ public class FilmInfoParser {
     }
 
 
-    public void parse(String path_to_data) {
+    public void parse(String path_to_data, String path_to_intro_raw) {
         if (path_to_data.length() > 0) {
             sDataPath = path_to_data;
         } else {
             sDataPath = Paths.get(".").toAbsolutePath().normalize().toString() + fs.getSeparator() + DEFAULT_DATA_PATH;
         }
+
+        String path_to_intro = (path_to_intro_raw.length() > 0) ? path_to_intro_raw : sDataPath + fs.getSeparator() + "introductions";
         readInfo(sDataPath + fs.getSeparator() +"data.txt");
         String sql;
         String[] all_infos = sContent.split("\n");
         File films_dir = new File(sDataPath + fs.getSeparator() +"films");
         sTypes = films_dir.listFiles(e -> e.getName().charAt(0) != '.');
-        File intro_dir = new File(sDataPath + fs.getSeparator() +"introductions");
+        File intro_dir = new File(path_to_intro);
         File img_dir = new File(sDataPath + fs.getSeparator() +"pictures");
         FileOutputStream fos;
         sql = "delete from film_actor; delete from film_director; delete from film;";
