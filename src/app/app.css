@@ -1,21 +1,51 @@
 .root{
-    -fx-background-color: orange;
+    -fx-background-color: #ccffee;
 }
-.button{
-    -fx-background-color: #888888;
+.playButton{
+    -fx-background-color: blue;
     -fx-font-size: 16pt;
+    -fx-font-family: Andalus;
+    -fx-text-fill: #0060e0;
 }
-.button:hover{
+.playButton:hover{
     -fx-background-color: lightskyblue;
 }
 .button_box{
     -fx-background-color: #777fff;
 }
+
+.button{
+    -fx-background-color: #80e0ef;
+    -fx-font-size: 10pt;
+    -fx-font-family: "Courier";
+    -fx-text-fill: #0060e0;
+}
+
 .volume_box{
     -fx-background-color: #777fff;
 }
 #lblTitle {
-    -fx-font-size: 20px;
+    -fx-font-size: 12px;
     -fx-font-weight: bolder;
-    -fx-text-fill: darkslategray;
+    -fx-text-fill: #000000;
+}
+.label{
+    -fx-font-family: Aparajita;
+    -fx-color-label-visible: #222555;
+    -fx-text-fill: #0060e0;
+}
+
+.list-view {
+    -fx-background-color: #eeffee;
+    -fx-font-family: "Courier";
+    -fx-border-width: 1;
+    -fx-text-fill: #0060e0;
+    -fx-border-color: #00ffee;
+}
+
+.list-cell {
+    -fx-background-color: #eeffee;
+    -fx-font-family: "Courier";
+    -fx-text-fill: #0060e0;
+    -fx-border-color: #00ffee;
 }
