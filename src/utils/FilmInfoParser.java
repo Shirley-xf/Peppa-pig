@@ -11,6 +11,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+
+/**
+ * The class Film info parser has parse method to parse the information in data.txt to database.
+ * It also contains 2 static method to update data in the database. One is setCountry, the other is setYear.
+ * Since it does not provide setActors, setDirectors, setDuration... if changing is need, changing the raw
+ * material data.txt is the only way.
+ *
+ */
 public class FilmInfoParser {
     private static final String DEFAULT_DATA_PATH = "data";
     private static String sContent;
@@ -20,10 +28,9 @@ public class FilmInfoParser {
 
     private static final FileSystem fs = FileSystems.getDefault();
 
-
     public FilmInfoParser() {}
 
-    public void readInfo(String path) {
+    private void readInfo(String path) {
         byte[] buffer;
         StringBuilder sb = new StringBuilder();
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path))) {
@@ -39,6 +46,17 @@ public class FilmInfoParser {
     }
 
 
+    /**
+     * Parse the information according to the path to grabbed data by the FilmInfoScrap.
+     * <p>
+     * The database should be set up adequately in dbres, for instance the columns and the tables.
+     * And then all info in data.txt can be parsed to database. Besides, introductions will be exported
+     * to the path to introduction
+     * </p>
+     *
+     * @param path_to_data      path to data.txt that grabbed by FilmInfoScrap
+     * @param path_to_intro_raw path to introduction
+     */
     public void parse(String path_to_data, String path_to_intro_raw) {
         if (path_to_data.length() > 0) {
             sDataPath = path_to_data;
@@ -137,7 +155,8 @@ public class FilmInfoParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            addToDirNameList(type_);
+            sDirNameList.add(type_.getName());
+//            addToDirNameList(type_);
         }
 
         File[] imgs = img_dir.listFiles(e -> e.getName().charAt(0) != '.');
@@ -153,16 +172,23 @@ public class FilmInfoParser {
         }
 
     }
-    public void addToDirNameList(File type) {
 
-        sDirNameList.add(type.getName());
-    }
-
+    /**
+     * Getter of the directories name list
+     *
+     * @return the list of directories name
+     */
     public static List<String> getDirNameList() {
 
         return sDirNameList;
     }
 
+    /**
+     * Update the year information of a film.
+     *
+     * @param name name of the film
+     * @param year year that specified
+     */
     public static void setYear(String name, int year) {
         String sql = "update film set year = " + year + " where name = \"" + name + "\";";
         try {
@@ -172,6 +198,12 @@ public class FilmInfoParser {
         }
     }
 
+    /**
+     * Update the country information of a film
+     *
+     * @param name    name of the film
+     * @param country country that specified
+     */
     public static void setCountry(String name, String country) {
         String sql = "update film set country = \"" + country + "\" where name = \"" + name + "\";";
         try {
@@ -181,6 +213,11 @@ public class FilmInfoParser {
         }
     }
 
+    /**
+     * getter of the path of data
+     *
+     * @return data path
+     */
     public static String getDataPath() {
         return sDataPath;
     }

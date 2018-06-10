@@ -105,7 +105,15 @@ public class Film {
         this.year = year;
     }
 
+
+
     @Override
+    /**
+     * returns the string according to Main.property.
+     * If the string is not as a key, it returns the name, else returns the mapped string.
+     *
+     * returns s
+     */
     public String toString() {
         String s;
         try {

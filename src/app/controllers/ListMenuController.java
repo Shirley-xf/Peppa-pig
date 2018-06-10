@@ -173,6 +173,10 @@ public class ListMenuController {
         return null;
     }
 
+    /**
+     * This method add directors and actors to film
+     * @param f film
+     */
     private void addDirectorsAndActors(Film f) {
         try {
             String actor_qry = "select `actor` from `film_actor` where `id` = " + f.getId() + ";";
@@ -217,6 +221,12 @@ public class ListMenuController {
         return scene;
     }
 
+    /**
+     * Get the string according to Main.property
+     * If the string is not as a key, it returns itself
+     * @param s
+     * @return
+     */
     private static String getPropString(String s) {
         String str;
         try {

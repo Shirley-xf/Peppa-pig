@@ -81,11 +81,7 @@ public class Main extends Application {
             FXMLLoaders.put(FXMLs[i], new FXMLLoader(Main.class.getResource(FXMLs[i])));
         }
 
-        try {
-            mLanguageLinkedList = PropertiesInfoParser.getPropertiesList(sPropPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mLanguageLinkedList = PropertiesInfoParser.getLanguagesList(sPropPath);
         sPrimaryStage = primaryStage;
 
 

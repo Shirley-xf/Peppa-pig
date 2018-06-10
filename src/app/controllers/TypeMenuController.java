@@ -82,14 +82,19 @@ public class TypeMenuController {
     }
 
     /**
-     * Go back.
+     * Go back to the start menu.
      */
     public void goBack() {
         Main.getPrimaryStage().setScene(Main.getsStartMenuController().getScene());
     }
 
     /**
-     * Sets up buttons.
+     * Sets up buttons of types.
+     * <p>
+     *     According to the specified film directory, this method can fetch the directory names
+     *     (which are the parent directories of the films) and set the buttons as the  name of directories
+     * </p>
+     *
      */
     public void setUpButtons() {
         List<String> str_list = FilmInfoParser.getDirNameList();

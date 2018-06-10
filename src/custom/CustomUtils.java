@@ -53,7 +53,7 @@ public class CustomUtils {
     }
 
     /**
-     * Delete custom in init custom list.
+     * Deletes custom in init custom list.
      *
      * @param c the c
      */
@@ -62,7 +62,7 @@ public class CustomUtils {
     }
 
     /**
-     * Del custom at post run customs.
+     * Deletes custom at post run customs.
      *
      * @param c the c
      */
@@ -80,18 +80,18 @@ public class CustomUtils {
     }
 
     /**
-     * Gets durable custom list.
+     * Gets the list of customs that runs at the end of starts.
      *
-     * @return the durable custom list
+     * @return the custom list
      */
     public static List getDurableCustomList() {
         return sDurableCustomList;
     }
 
     /**
-     * Gets properties custom.
+     * Gets custom that runs at first when the app starts. It runs before init, according to Main.
      *
-     * @return the properties custom
+     * @return the custom runs before.
      */
     public static Customizable getCustomAtPrev() {
         return prevCustom;
