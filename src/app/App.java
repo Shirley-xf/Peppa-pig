@@ -152,17 +152,19 @@ public class Main extends Application {
 
     private void getPropertiesInfo() {
         Customizable prop_custom = CustomUtils.getCustomAtPrev();
-        prop_custom.customSetup();
-        String intro_path = (sIntroPath.length() < 1) ? DEFAULT_INTRO_PATH : sIntroPath;
-        if (runned_custom_init) {
-            try {
-                for (File f : new File(intro_path).listFiles(f -> f.getName().contains(".txt"))) {
-                    String sql = "update film set intro_url = \"" + intro_path + FS.getSeparator() + f.getName()
-                            + "\" where name = \"" + f.getName().replace(".txt", "") + "\";";
-                            DbConnection.exeUpdate(sql);
+        if (prop_custom != null) {
+            prop_custom.customSetup();
+            String intro_path = (sIntroPath.length() < 1) ? DEFAULT_INTRO_PATH : sIntroPath;
+            if (runned_custom_init) {
+                try {
+                    for (File f : new File(intro_path).listFiles(f -> f.getName().contains(".txt"))) {
+                        String sql = "update film set intro_url = \"" + intro_path + FS.getSeparator() + f.getName()
+                                + "\" where name = \"" + f.getName().replace(".txt", "") + "\";";
+                        DbConnection.exeUpdate(sql);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
