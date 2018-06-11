@@ -1,7 +1,7 @@
 package app.controllers;
 
 
-import app.Main;
+import app.App;
 import app.datatype.Film;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -58,26 +58,26 @@ public class TypeMenuController {
      * @param type the String of type
      */
     public void goToListMenuAndShow(String type) {
-        Stage ps = Main.getPrimaryStage();
-        SplitPane sp_pane = Main.getsListMenuController().getFilmListSplitPane();
-        ps.setScene(Main.getsListMenuController().getScene());
-        List<Film> filmLinkedList = Main.getsListMenuController().setUpFilmByType(type);
+        Stage ps = App.getPrimaryStage();
+        SplitPane sp_pane = App.getsListMenuController().getFilmListSplitPane();
+        ps.setScene(App.getsListMenuController().getScene());
+        List<Film> filmLinkedList = App.getsListMenuController().setUpFilmByType(type);
         ListView<Film> list_view = (ListView<Film>) ((AnchorPane) sp_pane.getItems().get(0)).getChildren().get(0);
         list_view.getItems().clear();
         filmLinkedList.forEach(list_view.getItems()::add);
         list_view.getSelectionModel().selectFirst();
         list_view.setOnMousePressed(event -> {
             Film f = list_view.getSelectionModel().getSelectedItem();
-            Main.getsListMenuController().showAllInfo(f);
+            App.getsListMenuController().showAllInfo(f);
         });
 
         list_view.setOnKeyPressed(event -> {
             if (event.getCode().isWhitespaceKey()) {
                 Film f = list_view.getSelectionModel().getSelectedItem();
-                Main.getsListMenuController().showAllInfo(f);
+                App.getsListMenuController().showAllInfo(f);
             }
         });
-        Main.getPrimaryStage().show();
+        App.getPrimaryStage().show();
 
     }
 
@@ -85,7 +85,7 @@ public class TypeMenuController {
      * Go back to the start menu.
      */
     public void goBack() {
-        Main.getPrimaryStage().setScene(Main.getsStartMenuController().getScene());
+        App.getPrimaryStage().setScene(App.getsStartMenuController().getScene());
     }
 
     /**
@@ -98,12 +98,12 @@ public class TypeMenuController {
      */
     public void setUpButtons() {
         List<String> str_list = FilmInfoParser.getDirNameList();
-        GridPane this_pane = Main.getsTypeMenuController().getTypeMenuPane();
+        GridPane this_pane = App.getsTypeMenuController().getTypeMenuPane();
         ObservableList chrd = this_pane.getChildren();
         FilteredList<Button> chrd_btn_list = chrd.filtered(e -> (e instanceof Button) && !((Button) e).getId().equals("go_back_btn"));
         chrd.removeAll(chrd_btn_list);
         for (String s : str_list) {
-            String txt = Main.property.getString(s);
+            String txt = App.property.getString(s);
             Button btn = new Button(txt);
             btn.setId(s);
             chrd = this_pane.getChildren();

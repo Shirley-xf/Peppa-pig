@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.Main;
+import app.App;
 import app.datatype.Language;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -62,7 +62,7 @@ public class LanguageMenuController {
         ListView<Language> lan_lst_view = (ListView) languagePane.getChildren().get(0);
         Language lan = lan_lst_view.getSelectionModel().getSelectedItem();
         setLanguage(lan);
-        Main.getPrimaryStage().setScene(Main.getsStartMenuController().getScene());
+        App.getPrimaryStage().setScene(App.getsStartMenuController().getScene());
     }
 
     /**
@@ -71,10 +71,10 @@ public class LanguageMenuController {
      * @param lan the language that is going to be set.
      */
     private void setLanguage(Language lan) {
-        Main.cur_language = lan.toString().split("_")[1];
+        App.currentLanguage = lan.toString().split("_")[1];
         try {
-            Main.getPrimaryStage().close();
-            new Main().start(Main.getPrimaryStage());
+            App.getPrimaryStage().close();
+            new App().start(App.getPrimaryStage());
         } catch (Exception e) {
             e.printStackTrace();
         }

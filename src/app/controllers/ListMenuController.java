@@ -1,7 +1,7 @@
 package app.controllers;
 
+import app.App;
 import app.datatype.Film;
-import app.Main;
 import dao.DbConnection;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -43,8 +43,8 @@ public class ListMenuController {
      * Go back to type menu
      */
     public void goBack() {
-        Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
-        Main.getPrimaryStage().show();
+        App.getPrimaryStage().setScene(App.getsTypeMenuController().getScene());
+        App.getPrimaryStage().show();
     }
 
     /**
@@ -54,7 +54,7 @@ public class ListMenuController {
      */
     public void showAllInfo(Film f) {
 
-        PropertyResourceBundle prop = Main.property;
+        PropertyResourceBundle prop = App.property;
 
         // Poster
         try {
@@ -127,6 +127,7 @@ public class ListMenuController {
         mediaPlayer.setRate(3);
         mediaPlayer.setStartTime(new Duration(10000));
         mediaPlayer.setStopTime(new Duration(30000));
+        mediaPlayer.setMute(true);
         mediaPlayer.play();
     }
 
@@ -222,7 +223,7 @@ public class ListMenuController {
     }
 
     /**
-     * Get the string according to Main.property
+     * Get the string according to App.property
      * If the string is not as a key, it returns itself
      * @param s
      * @return
@@ -230,7 +231,7 @@ public class ListMenuController {
     private static String getPropString(String s) {
         String str;
         try {
-            str = Main.property.getString(s);
+            str = App.property.getString(s);
         } catch (MissingResourceException e) {
             str = s;
         }

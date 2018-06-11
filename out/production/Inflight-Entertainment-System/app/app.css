@@ -49,3 +49,8 @@
     -fx-text-fill: #0060e0;
     -fx-border-color: #00ffee;
 }
+
+#subtitle {
+    -fx-font-family: "Times";
+    -fx-text-fill: #BBBBBB;
+}

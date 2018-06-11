@@ -1,6 +1,6 @@
 package app.controllers;
 
-import app.Main;
+import app.App;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
@@ -38,13 +38,13 @@ public class StartMenuController {
      * Go to the type menu.
      */
     public void goToTypeMenu() {
-        Main.getPrimaryStage().setScene(Main.getsTypeMenuController().getScene());
+        App.getPrimaryStage().setScene(App.getsTypeMenuController().getScene());
     }
 
     /**
      * Go to the language menu.
      */
     public void goToLanguageMenu() {
-        Main.getPrimaryStage().setScene(Main.getsLanguageMenuController().getScene());
+        App.getPrimaryStage().setScene(App.getsLanguageMenuController().getScene());
     }
 }

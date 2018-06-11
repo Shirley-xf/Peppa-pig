@@ -1,17 +1,16 @@
 package utils;
 
-import app.Main;
+import app.App;
 import app.datatype.Language;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.util.*;
 
 /**
  * This class can parse the attributes of properties.
  */
 public class PropertiesInfoParser {
-    private static final String DEFAULT_PROPERTIES_PATH = "data" + Main.FS.getSeparator() + "properties";
+    private static final String DEFAULT_PROPERTIES_PATH = "data" + App.FS.getSeparator() + "properties";
     private static String sPropPath;
 
     /**

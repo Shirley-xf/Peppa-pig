@@ -1,44 +1,61 @@
 import custom.*;
 import app.*;
+import dao.DbConnection;
 import utils.FilmInfoParser;
 
 import java.io.File;
 
-public class Client {
 
+/**
+ * Main class to run the application
+ */
+public class Main {
+
+    /**
+     *
+     * Here is the field to interact with CustomUtils
+     * and sends custom settings to the App.
+     *
+     * Also the url of data base should be set up.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
+        DbConnection.setDbUrl("");
         CustomUtils.addCustomAtPrev(() -> {
-            switch (Main.cur_language) {
+            switch (App.currentLanguage) {
                 case "fr":
-                    Main.setIntroPath(Main.BASE_PATH
+                    App.setIntroPath(App.BASE_PATH
                             + File.separator + "data"
                             + File.separator + "introductions"
                             + File.separator + "fr");
                     break;
                 case "zh":
-                    Main.setIntroPath(Main.BASE_PATH
+                    App.setIntroPath(App.BASE_PATH
                             + File.separator + "data"
                             + File.separator + "introductions"
                             + File.separator + "zh");
                     break;
                 default:
-                    Main.setIntroPath("");
+                    App.setIntroPath("");
                     break;
             }
         });
+
         CustomUtils.addCustomToInit(() -> {
 
-            new FilmInfoParser().parse("", Main.getIntroPath());
-            Main.setFilmPath("");
-            Main.setPropertiesPath("");
+            new FilmInfoParser().parse("", App.getIntroPath());
+            App.setFilmPath("");
+            App.setPropertiesPath("");
         });
+
         CustomUtils.addCustomAtPost(() -> {
             FilmInfoParser.setYear("Pulp Fiction", 2010);
             FilmInfoParser.setCountry("Pulp Fiction", "unknown");
         });
 
 
-        Main.main(args);
+        App.boot(args);
     }
 }

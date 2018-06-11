@@ -5,7 +5,7 @@ import java.util.List;
 
 
 /**
- * This class offers custom settings, which can be fetched by the main class and run.
+ * This class offers custom settings, which can be fetched by the boot class and run.
  */
 public class CustomUtils {
     private CustomUtils() {
@@ -33,7 +33,7 @@ public class CustomUtils {
      * <p>
      *     This method runs at first since it runs. Stuff must be init here is the introductions url.
      *     Because Although we offers method to get introduction, we don't have auto translate method.
-     *     Client should specify the translated element here.
+     *     client.client should specify the translated element here.
      *     Note that only one custom can be write at prev. Or will cause override.
      * </p>
      *
@@ -89,7 +89,7 @@ public class CustomUtils {
     }
 
     /**
-     * Gets custom that runs at first when the app starts. It runs before init, according to Main.
+     * Gets custom that runs at first when the app starts. It runs before init, according to App.
      *
      * @return the custom runs before.
      */

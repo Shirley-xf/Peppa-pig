@@ -1,7 +1,6 @@
 package app.datatype;
 
-import app.Main;
-import javafx.scene.Node;
+import app.App;
 
 import java.util.List;
 import java.util.MissingResourceException;
@@ -109,7 +108,7 @@ public class Film {
 
     @Override
     /**
-     * returns the string according to Main.property.
+     * returns the string according to App.property.
      * If the string is not as a key, it returns the name, else returns the mapped string.
      *
      * returns s
@@ -117,7 +116,7 @@ public class Film {
     public String toString() {
         String s;
         try {
-            s = Main.property.getString(name);
+            s = App.property.getString(name);
         } catch (MissingResourceException e) {
             s = name;
         }
