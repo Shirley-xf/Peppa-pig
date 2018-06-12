@@ -7,12 +7,13 @@
     -fx-font-family: Andalus;
     -fx-text-fill: #0060e0;
 }
-.playButton:hover{
-    -fx-background-color: lightskyblue;
+.button:focused{
+    -fx-background-color: #aa88ff;
 }
 .button_box{
     -fx-background-color: #777fff;
 }
+
 
 .button{
     -fx-background-color: #80e0ef;
@@ -48,6 +49,10 @@
     -fx-font-family: "Courier";
     -fx-text-fill: #0060e0;
     -fx-border-color: #00ffee;
+}
+
+.list-cell:selected {
+    -fx-background-color: #11ffff;
 }
 
 #subtitle {

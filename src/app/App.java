@@ -323,7 +323,8 @@ public class App extends Application {
 
         subtitleLabel.setFont(new Font("Times", 25));
         subtitleLabel.setId("subtitle");
-        subtitleLabel.setTextFill(Color.DARKBLUE);
+        subtitleLabel.setStyle("-fx-font-family: Times;" +
+                "-fx-text-fill: #004488");
 
         mediaPlayer.volumeProperty().bind(slVolume.valueProperty().divide(100));
         HBox volume_box = new HBox();
