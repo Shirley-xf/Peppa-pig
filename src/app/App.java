@@ -61,6 +61,7 @@ public class App extends Application {
     private static String prefix = "default_";
     public static HashMap<Integer, String> subTitleNow;
 
+
     private static String sPropPath = "";
 
 
@@ -120,6 +121,15 @@ public class App extends Application {
         App.sPropPath = prop_path;
     }
 
+    public static void setIconPath(String icon_path) {
+        App.sIconPath = sIconPath;
+    }
+
+    public static String getIconPath() {
+        return sIconPath;
+    }
+
+    private static String sIconPath = BASE_PATH + FS.getSeparator() + "data" + FS.getSeparator() + "icons";
     /**
      * this is the method that overrides the start in Class Application, mainly start a stage
      *

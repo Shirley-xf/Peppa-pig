@@ -6,23 +6,29 @@ import app.datatype.Film;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import utils.FilmInfoParser;
 
+import java.io.File;
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 
 /**
  * This controller controls the type menu (typeMenu.fxml).
  */
-public class TypeMenuController {
+public class TypeMenuController implements Initializable {
 
     /**
      * Gets the pane here, which is a grid pane.
@@ -47,12 +53,12 @@ public class TypeMenuController {
 
     private Scene scene;
     @FXML private GridPane typeMenuPane;
-
+    @FXML private ImageView logo;
 
 
     /**
      * Go to list menu and show up the films of the type in the list.
-     * <p>
+     * <p>˜
      *      This method let the scene switch to list menu controller and show up films by the type specified.
      * </p>
      * @param type the String of type
@@ -134,4 +140,10 @@ public class TypeMenuController {
                 }
             }
         }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Image img = new Image(("file:" + App.getIconPath() + File.separator + "logo.png").replace(" ", "%20"));
+        logo.setImage(img);
     }
+}

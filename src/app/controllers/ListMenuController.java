@@ -39,6 +39,7 @@ public class ListMenuController {
     @FXML
     private Label basicInfo;
 
+
     /**
      * Go back to type menu
      */
