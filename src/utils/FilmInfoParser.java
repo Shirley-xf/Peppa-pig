@@ -13,11 +13,12 @@ import java.util.List;
 
 
 /**
+ * <p>
  * The class Film info parser has parse method to parse the information in data.txt to database.
  * It also contains 2 static method to update data in the database. One is setCountry, the other is setYear.
  * Since it does not provide setActors, setDirectors, setDuration... if changing is need, changing the raw
  * material data.txt is the only way.
- *
+ *</p>
  */
 public class FilmInfoParser {
     private static final String DEFAULT_DATA_PATH = "data";

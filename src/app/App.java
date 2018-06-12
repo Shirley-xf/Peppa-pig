@@ -39,10 +39,12 @@ import java.util.*;
 
 
 /**
- * App class is the main class that runs the application.
+ * <p>
+ * App class is the main class that launchs the application, cannot be directly run.
  * Normally it names Main and has a static main method.
  * However, we do not what it to run directly. So we use boot to replace main,
  * and the main method is in a client class.
+ * </p>
  */
 public class App extends Application {
 

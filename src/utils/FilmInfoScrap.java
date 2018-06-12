@@ -13,8 +13,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 /***
+ * <p>
  * A class utility which implements Runnable interface, is able to scrap several films' posters, basic
  * information and corresponding IMDb links concurrently with the help of JSoup library.
+ * </p>
  */
 public class FilmInfoScrap implements Runnable {
   private String filmName;

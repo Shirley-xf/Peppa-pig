@@ -2,7 +2,7 @@
 DROP TABLE IF EXISTS `film`;
 CREATE TABLE `film` (
 	`id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-	`name`	TEXT NOT NULL,
+	`name`	TEXT NOT NULL UNIQUE,
 	`duration`	TEXT,
   `year` INTEGER,
   `country` TEXT,
