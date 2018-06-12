@@ -1,5 +1,7 @@
 package app.datatype;
 
+import app.App;
+
 public class Language {
     public String getName() {
         return name;
@@ -25,6 +27,12 @@ public class Language {
 
     @Override
     public String toString() {
-        return name;
+        String p_name;
+        try {
+            p_name = App.property.getString(name);
+        } catch (Exception e) {
+            p_name = name;
+        }
+        return p_name;
     }
 }
