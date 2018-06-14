@@ -66,7 +66,7 @@ public class App extends Application {
 
     private static String sPropPath = "";
 
-
+    private Timeline subtitle_change = null;
     private static String sIntroPath = "";
     private String mSubtitle;
     /**
@@ -253,7 +253,7 @@ public class App extends Application {
         MediaView mediaView = new MediaView(mediaPlayer);
         mediaView.setFitWidth(550);
         mediaView.setFitHeight(340);
-        Runnable rnb = null;
+
         Button playButton = new Button(">");
 //        playButton.setStyle("-fx-text-fill: #2280e8; -fx-background-color: #eeffcc");
         Button backButton = new Button(property.getString("Back"));
@@ -269,6 +269,9 @@ public class App extends Application {
         });
         backButton.setOnAction(e -> {
             mediaPlayer.stop();
+            if (subtitle_change != null) {
+                subtitle_change.stop();
+            }
             sTypeMenuController.goToListMenuAndShow(film.getType());
         });
 
@@ -320,7 +323,7 @@ public class App extends Application {
                 subTitleNow.put((int) this_time, line.substring(sep_index + 1, line.length()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         subtitleLabel.setFont(new Font("Times", 25));
@@ -357,8 +360,8 @@ public class App extends Application {
         sPrimaryStage.setScene(scene);
         sPrimaryStage.show();
 
-        if (subTitleNow != null) {
-            Timeline subtitle_change = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+        if (subTitleNow != null && subTitleNow.size() > 0) {
+            subtitle_change = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
 
                 @Override
                 public void handle(ActionEvent event) {

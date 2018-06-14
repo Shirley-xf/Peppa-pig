@@ -157,7 +157,6 @@ public class FilmInfoParser {
                 e.printStackTrace();
             }
             sDirNameList.add(type_.getName());
-//            addToDirNameList(type_);
         }
 
         File[] imgs = img_dir.listFiles(e -> e.getName().charAt(0) != '.');

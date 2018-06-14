@@ -1,4 +1,0 @@
-0 Test of default subtitles
-3 It changes at 3
-5 It changes at 5
-7 It changes at 7
